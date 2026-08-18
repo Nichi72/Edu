@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class BirdMove : MonoBehaviour
 {
-    void Start()
+    void Update()
     {
-        float newY = -1f;
-        transform.position = new Vector3(-3f, newY, 0f);
+        float fallSpeed = 0.05f;
+
+        transform.position += new Vector3(0f, -fallSpeed, 0f);
     }
 }
