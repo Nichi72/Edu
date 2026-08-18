@@ -621,6 +621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BirdMove
   fallSpeed: 3
+  jumpPower: 1.5
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
