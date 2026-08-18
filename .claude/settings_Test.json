@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(Assets/**/*.cs)",
+      "Write(Assets/**/*.cs)",
+      "Edit(./Assets/**/*.cs)",
+      "Write(./Assets/**/*.cs)",
+
+      "Edit(CLAUDE.md)",
+      "Write(CLAUDE.md)",
+      "Edit(./CLAUDE.md)",
+      "Write(./CLAUDE.md)",
+
+      "Edit(syllabus.md)",
+      "Write(syllabus.md)",
+      "Edit(./syllabus.md)",
+      "Write(./syllabus.md)",
+
+      "Read(guide.md)",
+      "Edit(guide.md)",
+      "Write(guide.md)",
+      "Read(./guide.md)",
+      "Edit(./guide.md)",
+      "Write(./guide.md)",
+
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Edit(./.claude/**)",
+      "Write(./.claude/**)"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.user
+*.suo
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 튜터 자동 기록 (에러 로그는 개인 것이므로 커밋하지 않는다)
+.tutor/
+
+# Claude Code 개인 설정
+.claude/settings.local.json
+
+# ── 레퍼런스 제작 도구 (수업 내용 아님, 학생 배포본에는 없다) ──
+# Unity-MCP 플러그인이 넣는 DLL·생성 문서. 이게 섞이면
+# `git diff cp-07 cp-08 -- Assets/` 가 "학생이 칠 코드"와 달라진다.
+/Assets/Plugins/
+/Assets/Plugins.meta
+/.claude/skills/
+/.mcp.json
+/.mcp.json.cloud.bak
