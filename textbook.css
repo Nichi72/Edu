@@ -68,10 +68,10 @@ p  { margin: 0; text-wrap: pretty; }
 /* ---------- 레이아웃 ---------- */
 .doc {              /* 좌 목차 + 본문 + 우 미니목차 */
   display: flex; flex-wrap: wrap; gap: 40px;
-  max-width: 1180px; margin: 0 auto; padding: 0 40px;
+  max-width: 1680px; margin: 0 auto; padding: 0 40px;
 }
 .doc__nav   { flex: 0 1 292px; min-width: 248px; }
-.doc__body  { flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 56px; padding: 52px 0 96px; }
+.doc__body  { flex: 1 1 900px; min-width: 0; display: flex; flex-direction: column; gap: 56px; padding: 52px 0 96px; }
 .doc__rail  { flex: 1 1 196px; min-width: 180px; max-width: 280px; position: sticky; top: 0; align-self: flex-start; padding: 52px 0 60px; }
 .section    { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 24px; }
 .grid-2     { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
