@@ -1,0 +1,499 @@
+<title>낙하를 물리로 넘긴다</title>
+<link rel="stylesheet" href="../../textbook.css">
+
+<style>
+.topbar{position:sticky; top:0; z-index:10; height:60px; display:flex; align-items:center;
+  background:rgba(255,255,255,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.topbar__in{max-width:1680px; margin:0 auto; padding:0 40px; width:100%;
+  display:flex; align-items:center; gap:12px; font-size:13px; color:var(--text-subtle)}
+.topbar__sep{color:var(--text-faint)}
+.topbar__now{color:var(--text); font-weight:700}
+.navblock{position:sticky; top:60px; padding:52px 0 40px; display:flex; flex-direction:column; gap:8px}
+.search{width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:7px;
+  font-family:var(--font); font-size:13.5px; color:var(--text-body); background:var(--bg)}
+.search::placeholder{color:var(--text-faint)}
+.search:focus{outline:none; border-color:var(--line-strong)}
+.navpart{margin:16px 0 4px}
+.navfoot{margin-top:20px; padding-top:16px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:8px}
+.railtitle{margin-bottom:10px}
+.railitem{display:block; padding:5px 0; font-size:13px; color:var(--text-subtle)}
+.railitem:hover{color:var(--accent-deep)}
+.railitem.is-here{color:var(--accent-text); font-weight:700}
+.goals{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+.goals li{display:flex; gap:12px; font-size:15px; line-height:1.6; color:var(--text-body)}
+.goals .n{flex:0 0 auto; color:var(--accent); font-weight:700; font-variant-numeric:tabular-nums}
+.table__row--2{grid-template-columns:minmax(140px,240px) minmax(0,1fr)}
+.table__row--4{grid-template-columns:minmax(80px,110px) repeat(3, minmax(0,1fr))}
+.table__row--r > *:not(:first-child){text-align:right}
+.lab{display:flex; flex-direction:column; gap:14px}
+.ctl{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.ctl label{font-size:12.5px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--text-subtle); white-space:nowrap}
+.ctl input[type=range]{flex:1 1 180px; min-width:140px; accent-color:var(--accent); height:20px}
+.ctl .out{font-family:var(--font-code); font-size:13.5px; font-weight:700; color:var(--accent-deep);
+  font-variant-numeric:tabular-nums; min-width:78px; text-align:right}
+.btn{font-family:var(--font); font-size:13px; font-weight:700; padding:7px 16px; border-radius:9999px;
+  border:1px solid var(--line-strong); background:var(--bg); color:var(--text-body); cursor:pointer;
+  transition:background-color .16s ease, border-color .16s ease, color .16s ease}
+.btn:hover{background:var(--bg-subtle)}
+.btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.btn--go{border-color:var(--accent); color:var(--accent-text)}
+.btn--go:hover{background:var(--accent-bg-2)}
+.figrow{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px}
+.figcell{display:flex; flex-direction:column; gap:8px}
+.figcell__h{font-family:var(--font-code); font-size:12px; color:#b3b3b3}
+.figcell__h b{display:block; font-family:var(--font); font-size:13px; color:#fff; margin-bottom:2px}
+canvas{display:block; width:100%; height:auto; border-radius:6px; background:#87ceeb}
+.figstat{display:flex; justify-content:space-between; align-items:baseline;
+  font-family:var(--font-code); font-size:12px; color:#b3b3b3; font-variant-numeric:tabular-nums}
+.figstat b{font-size:15px; color:#fff}
+.blank{border-bottom:2px solid var(--code-str); color:var(--code-str); padding:0 6px}
+details{border:1px solid var(--line); border-radius:var(--radius-card)}
+summary{padding:15px 20px; cursor:pointer; list-style:none; display:flex; align-items:center; gap:10px;
+  font-size:15px; font-weight:700; color:var(--text)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+"; color:var(--accent); font-weight:700; font-size:16px}
+details[open] summary::before{content:"−"}
+details[open] summary{border-bottom:1px solid var(--line)}
+.det{padding:20px; display:flex; flex-direction:column; gap:16px}
+.answers{display:flex; flex-direction:column; gap:8px}
+.navpair{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+.navpair a{display:block; border:1px solid var(--line); border-radius:var(--radius-card); padding:16px 20px}
+.navpair a:hover{background:var(--bg-subtle)}
+.navpair .l{font-size:12px; color:var(--text-faint)}
+.navpair .t{font-size:15px; font-weight:700; color:var(--text)}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>2부 · 새를 띄운다</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">10</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <input class="search" type="search" placeholder="검색" aria-label="교재 검색">
+      <div class="navpart label">2부 · 새를 띄운다</div>
+      <a class="toc__item" href="#"><span class="toc__num">05</span>한 칸 아래로 내려간다</a>
+      <a class="toc__item" href="#"><span class="toc__num">06</span>계속 내려간다</a>
+      <a class="toc__item" href="#"><span class="toc__num">07</span>어느 PC에서나 같게</a>
+      <a class="toc__item" href="#"><span class="toc__num">08</span>스페이스로 위로 튄다</a>
+      <a class="toc__item" href="#"><span class="toc__num">09</span>천장·바닥에 닿으면 죽는다</a>
+      <div class="toc__current">
+        <div>10 · 낙하를 물리로 넘긴다</div>
+        <a class="toc__sub" href="#s1">10.1 손으로 만든 낙하의 한계</a>
+        <a class="toc__sub" href="#s2">10.2 Rigidbody 를 붙인다</a>
+        <a class="toc__sub" href="#s3">10.3 등속과 가속의 차이</a>
+        <a class="toc__sub" href="#s4">10.4 코드를 고친다</a>
+        <a class="toc__sub" href="#s5">10.5 확인한다</a>
+        <a class="toc__sub" href="#s6">10.6 막혔을 때</a>
+      </div>
+      <div class="navpart label">3부 · 장애물을 만든다</div>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">11</span>파이프가 흘러온다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">12</span>프리팹으로 복제한다</a>
+      <div class="navfoot">
+        <div class="meta num">2부 진도 · 9 / 9</div>
+        <div class="progress"><div class="progress__bar" style="width:100%"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+
+    <section class="section">
+      <div class="eyebrow">Chapter 10</div>
+      <h1>낙하를 직접 짠 코드에서<br>물리로 넘긴다</h1>
+      <p class="lead">지금까지 새는 일정한 속도로 떨어지고, 스페이스를 누르면 순간이동하듯 위로 뛰었다. 진짜 물체는 그렇게 움직이지 않는다. 이번에는 그 일을 Unity 의 물리에 맡긴다.</p>
+      <div class="meta num">읽는 시간 약 30분 · 실습 3 · 문항 2</div>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">학습 목표</div>
+        <ul class="goals">
+          <li><span class="n">1</span><span><code>Rigidbody</code> 를 붙여 중력을 Unity 에 맡길 수 있다.</span></li>
+          <li><span class="n">2</span><span><code>Constraints</code> 로 원하지 않는 회전과 이동을 막을 수 있다.</span></li>
+          <li><span class="n">3</span><span>등속과 가속의 차이를 화면과 숫자로 구분할 수 있다.</span></li>
+          <li><span class="n">4</span><span>손으로 짠 낙하와 물리 중 무엇이 더 나은지, 왜 그런지 설명할 수 있다.</span></li>
+        </ul>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">이번 항목의 특별한 점</span>
+        <span>지금까지는 코드를 <strong>더했다.</strong> 이번에는 <strong>지워낸다.</strong> 05번부터 공들여 만든 낙하 코드가 통째로 사라지고 그 자리를 물리가 대신한다. 아깝게 느껴지겠지만, 그 코드를 직접 짜봤기 때문에 물리가 무엇을 대신해 주는지 알 수 있다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s1">
+      <div class="eyebrow">10.1</div>
+      <h2>손으로 만든 낙하의 한계</h2>
+
+      <p>09번까지 만든 낙하는 이랬다.</p>
+      <div class="code">
+        <div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">09번 상태</span></div>
+        <pre><code>transform.position += <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">0f</span>, -fallSpeed * <span class="tok-lit">Time</span>.deltaTime, <span class="tok-str">0f</span>);</code></pre>
+      </div>
+
+      <p>이 코드는 <strong>1초에 3칸씩, 처음부터 끝까지 같은 속도로</strong> 내려간다. 이것을 <strong>등속</strong>이라고 한다.</p>
+
+      <p>그런데 진짜 물체는 그렇지 않다. 손에서 놓은 공은 <strong>처음엔 천천히, 갈수록 빨라진다.</strong> 이것을 <strong>가속</strong>이라고 한다.</p>
+
+      <p>점프도 마찬가지였다. 스페이스를 누르면 <strong>순간이동</strong>하듯 1.5칸 위로 튀어 오르고, 곧바로 같은 속도로 내려왔다. 진짜 점프는 올라가다가 <strong>점점 느려지고, 잠깐 멈췄다가, 점점 빨라지며</strong> 떨어진다.</p>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">왜 직접 짰나</span>
+        <span>처음부터 물리를 쓰지 않은 이유가 있다. <code>+=</code>, <code>Time.deltaTime</code>, 부호, <code>if</code> — 05번부터 09번까지 배운 것들은 <strong>물리를 쓰든 안 쓰든 계속 필요한 도구</strong>다. 물리부터 배웠다면 그 도구들을 쓸 일이 없었을 것이다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s2">
+      <div class="eyebrow">10.2</div>
+      <h2><code>Rigidbody</code> 를 붙인다</h2>
+
+      <p><code>Rigidbody</code> 는 <strong>"이 물체를 물리 법칙에 따라 움직여라"</strong> 라고 Unity 에게 맡기는 컴포넌트다. 붙이는 순간 중력이 적용되고, 부딪히면 멈춘다.</p>
+
+      <h3>붙이는 방법</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>순서</span><span>할 일</span></div>
+        <div class="table__row table__row--2"><span>1</span><span>Hierarchy 에서 <code>Bird</code> 를 클릭</span></div>
+        <div class="table__row table__row--2"><span>2</span><span>Inspector 맨 아래 <code>Add Component</code> 클릭</span></div>
+        <div class="table__row table__row--2"><span>3</span><span><code>Rigidbody</code> 를 검색해서 추가 <span class="meta">(Rigidbody 2D 가 아니다)</span></span></div>
+      </div>
+
+      <h3><code>Constraints</code> — 원하지 않는 움직임을 막는다</h3>
+
+      <p>물리를 켜면 Unity 는 <strong>모든 방향</strong>으로 움직이려 한다. 우리 게임은 옆에서 보는 2D 라서 그중 일부는 방해가 된다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>막아야 할 것</span><span>왜</span></div>
+        <div class="table__row table__row--2"><span>회전 (Freeze Rotation X·Y·Z)</span><span>부딪히면 새가 빙글빙글 돈다. 옆에서 보는 게임에서는 이상하다</span></div>
+        <div class="table__row table__row--2"><span>Z 이동 (Freeze Position Z)</span><span>화면 안쪽·바깥쪽으로 밀려나면 카메라에서 크기가 달라지거나 사라진다</span></div>
+      </div>
+
+      <p>Inspector 의 <code>Rigidbody</code> 안에서 <code>Constraints</code> 를 펼치고, <strong>Freeze Position 의 Z</strong> 와 <strong>Freeze Rotation 의 X·Y·Z</strong> 를 모두 체크한다.</p>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">Interpolate</span>
+        <span>같은 <code>Rigidbody</code> 안의 <code>Interpolation</code> 을 <code>Interpolate</code> 로 바꾸면 움직임이 한결 부드러워진다. 물리 계산은 화면 갱신과 주기가 달라서, 그 사이를 메워 주는 기능이다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s3">
+      <div class="eyebrow">10.3</div>
+      <h2>등속과 가속의 차이</h2>
+
+      <p>말로는 잘 와닿지 않는다. <strong>같은 높이에서 두 마리를 동시에 떨어뜨려 보자.</strong> 왼쪽은 09번까지의 방식(등속), 오른쪽은 물리(가속)다.</p>
+
+      <div class="card lab">
+        <div class="ctl">
+          <button class="btn btn--go" id="drop">다시 떨어뜨리기</button>
+          <button class="btn" id="jump">둘 다 점프시키기</button>
+          <span class="meta">점프는 왼쪽이 순간이동, 오른쪽이 속도 주기다</span>
+        </div>
+
+        <div class="figure">
+          <div class="figrow">
+            <div class="figcell">
+              <div class="figcell__h"><b>09번까지 — 등속</b>position += 속도 * deltaTime</div>
+              <canvas id="cA" width="320" height="240" aria-label="등속으로 떨어지는 새"></canvas>
+              <div class="figstat"><span>속도</span><b id="vA">0.00</b></div>
+            </div>
+            <div class="figcell">
+              <div class="figcell__h"><b>10번 — 물리(가속)</b>Rigidbody 가 알아서</div>
+              <canvas id="cB" width="320" height="240" aria-label="가속하며 떨어지는 새"></canvas>
+              <div class="figstat"><span>속도</span><b id="vB">0.00</b></div>
+            </div>
+          </div>
+          <div class="figure__cap">그림 10-1 · 등속과 가속</div>
+          <div class="figure__note">왼쪽 속도는 3.00 에서 변하지 않는다. 오른쪽은 계속 커진다. 점프를 눌러 보면 차이가 더 분명하다.</div>
+        </div>
+      </div>
+
+      <h3>Unity 에서 실제로 잰 값</h3>
+      <p>물리를 켠 뒤 y = 4 에서 떨어뜨리며 0.1초마다 기록한 값이다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--4 table__row--r"><span>시각</span><span>높이 y</span><span>그동안 내려간 폭</span><span>속도</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>0.51초</span><span>2.76</span><span>0.486</span><span>−4.905</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>0.60초</span><span>2.26</span><span>0.493</span><span>−5.886</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>0.71초</span><span>1.58</span><span>0.688</span><span>−6.867</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>0.81초</span><span>0.86</span><span>0.713</span><span>−7.848</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>0.90초</span><span>0.05</span><span>0.813</span><span>−8.829</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>1.00초</span><span>−0.84</span><span>0.888</span><span>−9.810</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>1.10초</span><span>−1.86</span><span>1.019</span><span>−10.791</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>1.21초</span><span>−3.10</span><span>1.240</span><span>−11.772</span></div>
+      </div>
+
+      <p><strong>속도가 0.1초마다 정확히 0.981 씩 커진다.</strong> 지구 중력이 초당 9.81 이니까, 0.1초면 0.981 이다. Unity 가 진짜 중력을 그대로 쓰고 있다는 뜻이다.</p>
+      <p>내려간 폭도 <code>0.486 → 0.493 → 0.688 → … → 1.240</code> 으로 계속 커진다. <strong>이게 가속이고, 화면에서는 포물선으로 보인다.</strong></p>
+
+      <div class="card--soft">09번까지의 방식이었다면 이 표의 “내려간 폭” 칸이 처음부터 끝까지 <strong>0.300 으로 똑같았을</strong> 것이다.</div>
+    </section>
+
+    <section class="section" id="s4">
+      <div class="eyebrow">10.4</div>
+      <h2>코드를 고친다</h2>
+
+      <p>이번에는 <strong>지우는 것이 더 많다.</strong> 낙하 코드는 통째로 사라지고, 점프는 “순간이동”에서 “속도 주기”로 바뀐다.</p>
+
+      <div class="code">
+        <div class="code__bar">
+          <span class="code__dot"></span><code class="code__name">BirdMove.cs</code>
+          <span class="code__path">Assets/Scripts</span><span class="code__copy">복사</span>
+        </div>
+        <pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+<span class="tok-key">using</span> <span class="tok-lit">UnityEngine.InputSystem</span>;
+
+<span class="tok-key">public class</span> <span class="tok-lit">BirdMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public float</span> jumpPower = <span class="tok-str">5f</span>;
+
+    <span class="tok-lit">Rigidbody</span> rb;
+    <span class="tok-key">bool</span> isDead = <span class="tok-key">false</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        rb = <span class="blank">__________________</span>;
+    }
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-key">if</span> (!isDead)
+        {
+            <span class="tok-key">if</span> (<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+            {
+                rb.<span class="blank">______________</span> = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">0f</span>, jumpPower, <span class="tok-str">0f</span>);
+            }
+
+            <span class="tok-key">if</span> (transform.position.y &gt;= <span class="tok-str">4.5f</span> || transform.position.y &lt;= <span class="tok-str">-3.5f</span>)
+            {
+                isDead = <span class="tok-key">true</span>;
+                <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"Dead"</span>);
+            }
+        }
+    }
+}</code></pre>
+      </div>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>빈칸</span><span>힌트</span></div>
+        <div class="table__row table__row--2"><span><code>rb = </code></span><span>내가 붙어 있는 오브젝트에서 컴포넌트 하나를 찾아온다. <code>GetComponent</code> 로 시작하고 꺾쇠 안에 타입 이름을 쓴다</span></div>
+        <div class="table__row table__row--2"><span><code>rb.</code> 뒤</span><span>물체의 <strong>속도</strong>를 담는 칸. <code>linear</code> 로 시작한다</span></div>
+      </div>
+
+      <h3>사라진 것</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>지운 것</span><span>이제 누가 하나</span></div>
+        <div class="table__row table__row--2"><span><code>fallSpeed</code> 변수</span><span>Rigidbody 의 중력</span></div>
+        <div class="table__row table__row--2"><span>낙하 <code>transform.position +=</code> 줄</span><span>Rigidbody 의 중력</span></div>
+        <div class="table__row table__row--2"><span>천장 보정 <code>if</code></span><span>필요 없어졌다. 물리로는 조금씩 올라가서 훌쩍 넘어가지 않는다</span></div>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">주의</span>
+        <span>이제 <strong><code>transform.position</code> 으로 새를 옮기면 안 된다.</strong> 물리가 위치를 관리하고 있어서 서로 싸운다. 옮겨야 한다면 <code>rb.position</code> 을 쓴다. <span class="meta">— 이 교재를 만들면서 실제로 걸렸던 부분이다. <code>transform.position</code> 으로 새를 옮겼더니 물리가 곧바로 되돌려 놓았다.</span></span>
+      </div>
+
+      <details>
+        <summary>정답 확인 <span class="meta" style="margin-left:auto">스스로 채워 본 뒤에 펼치자</span></summary>
+        <div class="det">
+          <div class="code">
+            <div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Scripts</span></div>
+            <pre><code>    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        rb = <span class="tok-fn">GetComponent</span>&lt;<span class="tok-lit">Rigidbody</span>&gt;();
+    }
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-key">if</span> (!isDead)
+        {
+            <span class="tok-key">if</span> (<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+            {
+                rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">0f</span>, jumpPower, <span class="tok-str">0f</span>);
+            }
+            ...
+        }
+    }</code></pre>
+          </div>
+          <div class="table">
+            <div class="table__row table__row--head table__row--2"><span>줄</span><span>뜻</span></div>
+            <div class="table__row table__row--2"><span><code>GetComponent&lt;Rigidbody&gt;()</code></span><span>“내가 붙어 있는 오브젝트에서 Rigidbody 를 찾아와라”. 매 프레임 찾으면 낭비이므로 <code>Start()</code> 에서 한 번만 찾아 <code>rb</code> 에 담아 둔다</span></div>
+            <div class="table__row table__row--2"><span><code>rb.linearVelocity = …</code></span><span>“지금 속도를 이 값으로 바꿔라”. 위로 5 를 넣으면 위로 솟았다가 중력에 의해 자연스럽게 되돌아온다</span></div>
+          </div>
+          <div class="callout callout--tip">
+            <span class="callout__label">왜 <code>+=</code> 가 아니라 <code>=</code> 인가</span>
+            <span><code>+=</code> 를 쓰면 빠르게 연타할수록 속도가 계속 쌓여 새가 로켓처럼 날아간다. <code>=</code> 로 <strong>덮어써야</strong> 언제 눌러도 같은 높이로 뛴다.</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" id="s5">
+      <div class="eyebrow">10.5</div>
+      <h2>확인한다</h2>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:8px">체크리스트</div>
+        <div class="check" data-check><span class="check__box"></span><span>새가 <strong>회전하지 않는다</strong> — Play 중 Inspector 의 Rotation 이 (0, 0, 0) 에서 안 변한다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span><strong>Position Z 가 0</strong> 에서 변하지 않는다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span>낙하가 등속이 아니라 <strong>점점 빨라진다</strong></span></div>
+        <div class="check" data-check><span class="check__box"></span><span>스페이스를 누르면 위로 튀었다가 <strong>부드럽게</strong> 내려온다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span>바닥에 얹힌 뒤 <strong>덜덜 떨지 않는다</strong></span></div>
+      </div>
+
+      <div class="card--soft">이 교재를 만들면서 잰 값 — 바닥에 안착한 뒤 <strong>2355 프레임</strong> 동안 y 가 <code>−3.50000</code> 에서 <strong>한 번도</strong> 변하지 않았다. 회전 이탈 0.0000도, z 이탈 0.0000.</div>
+
+      <h3>문항 1 · 점프에 <code>=</code> 를 쓰는 이유</h3>
+      <p><code>rb.linearVelocity += new Vector3(0f, jumpPower, 0f);</code> 처럼 <code>+=</code> 를 쓰면 어떻게 되나?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">A</span><span>똑같다. 어차피 속도를 주는 것이니까</span></div>
+        <div class="choice" data-q="1" data-ok="1"><span class="choice__tag">B</span><span>연타하면 속도가 쌓여 새가 로켓처럼 날아간다</span></div>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">C</span><span>점프가 아예 안 된다</span></div>
+      </div>
+      <div class="explain" data-explain="1" hidden><code>+=</code> 는 <strong>원래 속도에 더한다.</strong> 이미 위로 5 로 올라가는 중에 또 누르면 10 이 된다. <code>=</code> 로 덮어써야 언제 눌러도 같은 높이로 뛴다. 06번에서 배운 <code>=</code> 와 <code>+=</code> 의 차이가 여기서 다시 나온다.</div>
+
+      <h3>문항 2 · 무엇이 더 나은가</h3>
+      <p>손으로 짠 낙하와 물리 중 이 게임에는 무엇이 낫나?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">A</span><span>손으로 짠 쪽. 코드를 내가 다 아니까</span></div>
+        <div class="choice" data-q="2" data-ok="1"><span class="choice__tag">B</span><span>물리 쪽. 가속·충돌 같은 걸 직접 안 짜도 된다</span></div>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">C</span><span>둘이 완전히 같다</span></div>
+      </div>
+      <div class="explain" data-explain="2" hidden><strong>다만 항상 물리가 낫지는 않다.</strong> 물리는 가속·충돌·마찰을 전부 알아서 해주는 대신, <strong>내가 원하는 대로 정확히 움직이게 만들기는 더 어렵다.</strong> 이 게임처럼 “진짜 물체처럼” 움직여야 하는 경우에는 물리가 낫고, 정해진 경로를 정확히 따라가야 하는 경우에는 직접 짜는 편이 낫다. 파이프는 11번에서 직접 짜서 움직인다.</div>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">말로 설명해 보기</span>
+        <span>손으로 짠 낙하와 물리 중 무엇이 더 나은가? <strong>왜 그런가?</strong> 자기 말로 설명할 수 있으면 통과다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s6">
+      <div class="eyebrow">10.6</div>
+      <h2>막혔을 때</h2>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>증상</span><span>원인과 해결</span></div>
+        <div class="table__row table__row--2"><span><code>NullReferenceException</code> 이 뜬다</span><span><code>Rigidbody</code> 를 안 붙였다. <code>GetComponent&lt;Rigidbody&gt;()</code> 가 못 찾아서 <code>rb</code> 가 비어 있는 것이다. Inspector 에서 <code>Add Component</code> 로 붙이자. <strong>“있어야 할 게 없다”는 뜻</strong>이니 앞으로도 이 에러가 뜨면 “뭘 빠뜨렸지?” 부터 생각하자</span></div>
+        <div class="table__row table__row--2"><span>새가 빙글빙글 돈다</span><span><code>Constraints</code> 의 <code>Freeze Rotation</code> X·Y·Z 를 체크하지 않았다</span></div>
+        <div class="table__row table__row--2"><span>새가 점점 작아지거나 사라진다</span><span>Z 축으로 밀려난 것이다. <code>Freeze Position</code> 의 Z 를 체크하자</span></div>
+        <div class="table__row table__row--2"><span>바닥을 뚫고 내려간다</span><span><code>Ground</code> 에 <code>Box Collider</code> 가 있는지 확인. 3D Object 로 만들었다면 처음부터 붙어 있다</span></div>
+        <div class="table__row table__row--2"><span>연타하면 로켓처럼 날아간다</span><span><code>+=</code> 를 썼다. <code>=</code> 로 덮어쓰자</span></div>
+        <div class="table__row table__row--2"><span>코드로 위치를 바꿨는데 안 먹는다</span><span><code>Rigidbody</code> 가 붙으면 물리가 위치를 관리한다. <code>transform.position</code> 대신 <code>rb.position</code> 을 쓰자</span></div>
+        <div class="table__row table__row--2"><span>스페이스를 눌러도 반응이 없다</span><span><strong>Game 뷰를 한 번 클릭</strong>하자. 키 입력은 선택된 창으로 간다</span></div>
+      </div>
+
+      <h3>11번 예고</h3>
+      <div class="card--soft">새는 이제 물리로 움직인다. 그런데 <strong>파이프는 물리로 움직이지 않는다.</strong> 파이프는 정해진 속도로 정확히 왼쪽으로 흘러가야 하기 때문이다. 11번에서는 06~07번에서 썼던 그 이동 코드를 다시 꺼내 쓴다. <strong>새에서 지워낸 코드가 파이프에서 살아난다.</strong></div>
+    </section>
+
+    <section class="section">
+      <div class="navpair">
+        <a href="#"><div class="l">이전</div><div class="t">09 · 천장이나 바닥에 닿으면 죽는다</div></a>
+        <a href="#"><div class="l">다음</div><div class="t">11 · 파이프 한 쌍이 흘러온다</div></a>
+      </div>
+    </section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">10.1 손으로 만든 낙하의 한계</a>
+    <a class="railitem" href="#s2">10.2 Rigidbody 를 붙인다</a>
+    <a class="railitem" href="#s3">10.3 등속과 가속의 차이</a>
+    <a class="railitem" href="#s4">10.4 코드를 고친다</a>
+    <a class="railitem" href="#s5">10.5 확인한다</a>
+    <a class="railitem" href="#s6">10.6 막혔을 때</a>
+  </aside>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var TOP = 5, BOT = -5, START = 3.5, G = 9.81, CONST_V = 3, JUMP = 5;
+
+  function Sim(canvas, physics){
+    this.c = canvas; this.ctx = canvas.getContext('2d'); this.phys = physics; this.reset();
+  }
+  Sim.prototype.reset = function(){ this.y = START; this.v = this.phys ? 0 : -CONST_V; this.done = false; };
+  Sim.prototype.jump = function(){
+    if(this.done) return;
+    if(this.phys) this.v = JUMP;            // 속도를 준다 → 포물선
+    else this.y += 1.5;                     // 순간이동
+  };
+  Sim.prototype.step = function(dt){
+    if(this.done) return;
+    if(this.phys){ this.v -= G * dt; this.y += this.v * dt; }
+    else { this.y -= CONST_V * dt; this.v = -CONST_V; }
+    if(this.y <= -3.5){ this.y = -3.5; this.v = 0; this.done = true; }
+  };
+  Sim.prototype.draw = function(){
+    var ctx = this.ctx, W = this.c.width, H = this.c.height;
+    var px = function(wy){ return (TOP - wy) / (TOP - BOT) * H; };
+    ctx.fillStyle = '#87ceeb'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#4c9a2a'; ctx.fillRect(0, px(-4), W, H - px(-4));
+    var u = H / (TOP - BOT);
+    ctx.fillStyle = '#ffc800';
+    ctx.fillRect(W*0.32 - u/2, px(this.y) - u/2, u, u);
+  };
+
+  var a = new Sim(document.getElementById('cA'), false);
+  var b = new Sim(document.getElementById('cB'), true);
+  var vA = document.getElementById('vA'), vB = document.getElementById('vB');
+  var raf = null, last = 0;
+
+  function loop(now){
+    var dt = Math.min((now - last)/1000, .05); last = now;
+    a.step(dt); b.step(dt); a.draw(); b.draw();
+    vA.textContent = Math.abs(a.v).toFixed(2);
+    vB.textContent = Math.abs(b.v).toFixed(2);
+    raf = requestAnimationFrame(loop);
+  }
+  function run(){ if(raf) cancelAnimationFrame(raf); a.reset(); b.reset(); last = performance.now(); raf = requestAnimationFrame(loop); }
+  document.getElementById('drop').addEventListener('click', run);
+  document.getElementById('jump').addEventListener('click', function(){ a.jump(); b.jump(); });
+  a.draw(); b.draw();
+  if('IntersectionObserver' in window){
+    var seen = false;
+    new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !seen){ seen = true; run(); } }); }, {threshold:.35})
+      .observe(document.getElementById('cA'));
+  }
+
+  document.querySelectorAll('[data-check]').forEach(function(el){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0'); el.setAttribute('aria-checked','false');
+    function t(){ var on = el.classList.toggle('is-done'); el.setAttribute('aria-checked', on?'true':'false');
+      el.querySelector('.check__box').textContent = on ? '✓' : ''; }
+    el.addEventListener('click', t);
+    el.addEventListener('keydown', function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+
+  document.querySelectorAll('[data-quiz]').forEach(function(g){
+    g.addEventListener('click', function(e){
+      var c = e.target.closest('.choice'); if(!c || g.dataset.locked) return;
+      g.dataset.locked = '1';
+      g.querySelectorAll('.choice').forEach(function(o){
+        var ok = o.dataset.ok === '1';
+        if(ok) o.classList.add('choice--right'); else if(o === c) o.classList.add('choice--wrong');
+        if(o === c || ok){ var s = document.createElement('span');
+          s.style.cssText='margin-left:auto;font-size:12.5px;font-weight:700';
+          s.textContent = ok ? '정답' : '오답'; o.appendChild(s); }
+      });
+      var ex = document.querySelector('[data-explain="'+c.dataset.q+'"]'); if(ex) ex.hidden = false;
+    });
+  });
+
+  var rail = [].slice.call(document.querySelectorAll('.railitem'));
+  var secs = rail.map(function(x){ return document.querySelector(x.getAttribute('href')); });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(!e.isIntersecting) return;
+        var i = secs.indexOf(e.target); if(i < 0) return;
+        rail.forEach(function(x, j){ x.classList.toggle('is-here', i === j); }); });
+    }, {rootMargin:'-64px 0px -70% 0px'});
+    secs.forEach(function(s){ if(s) io.observe(s); });
+  }
+})();
+</script>
