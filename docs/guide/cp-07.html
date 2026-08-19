@@ -1,0 +1,547 @@
+<title>어느 PC에서나 같게</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F5F8FA; --surface:#FFFFFF; --surface-2:#EDF2F5;
+  --ink:#1A2027; --ink-soft:#3D4854; --muted:#657381; --line:#D9E2E8;
+  --accent:#0F6E88; --accent-soft:#DCEEF4;
+  --bird:#C98A05; --bird-soft:#FBF0D4;
+  --warn:#A4432A; --warn-soft:#F9E7E1;
+  --good:#2E6B45; --good-soft:#E1F0E6;
+  --code-bg:#EBF1F4; --code-ink:#1A2027;
+  --sky:#87CEEB; --grass:#4C9A2A;
+  --r:10px; --maxw:44rem;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1418; --surface:#161E24; --surface-2:#1D272E;
+    --ink:#DEE6EC; --ink-soft:#B9C5CE; --muted:#8496A2; --line:#2A3841;
+    --accent:#63BDD6; --accent-soft:#12303A;
+    --bird:#E0AE3E; --bird-soft:#33280E;
+    --warn:#E08E72; --warn-soft:#3A211A;
+    --good:#7FC39A; --good-soft:#152C1F;
+    --code-bg:#101A20; --code-ink:#DEE6EC;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1418; --surface:#161E24; --surface-2:#1D272E;
+  --ink:#DEE6EC; --ink-soft:#B9C5CE; --muted:#8496A2; --line:#2A3841;
+  --accent:#63BDD6; --accent-soft:#12303A;
+  --bird:#E0AE3E; --bird-soft:#33280E;
+  --warn:#E08E72; --warn-soft:#3A211A;
+  --good:#7FC39A; --good-soft:#152C1F;
+  --code-bg:#101A20; --code-ink:#DEE6EC;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16.5px; line-height:1.85; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 1.25rem 6rem}
+h1,h2,h3{font-family:"Gothic A1","IBM Plex Sans KR",sans-serif; font-weight:800; text-wrap:balance; line-height:1.35}
+
+/* ── 머리 ── */
+.masthead{border-bottom:1px solid var(--line); background:var(--surface); margin-bottom:2.5rem}
+.masthead .wrap{padding-top:2.5rem; padding-bottom:2rem}
+.crumb{display:flex; align-items:baseline; gap:.6rem; font-size:.8rem; color:var(--muted);
+  letter-spacing:.09em; text-transform:uppercase; font-weight:600; margin-bottom:.6rem}
+.crumb b{color:var(--accent); font-size:1rem; letter-spacing:.02em; font-variant-numeric:tabular-nums}
+h1{font-size:clamp(1.7rem,4.6vw,2.35rem); margin:0 0 1rem}
+.goal{display:flex; gap:.85rem; padding:1rem 1.15rem; border-radius:var(--r);
+  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.goal .k{flex:0 0 auto; font-size:.72rem; font-weight:700; letter-spacing:.1em; color:var(--accent);
+  text-transform:uppercase; padding-top:.42rem}
+.goal p{margin:0; color:var(--ink); font-weight:500}
+
+/* ── 섹션 ── */
+section{margin:3.25rem 0 0}
+.tag{display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.11em; text-transform:uppercase;
+  padding:.25rem .6rem; border-radius:999px; margin-bottom:.7rem}
+.t-concept{background:var(--accent-soft); color:var(--accent)}
+.t-do{background:var(--bird-soft); color:var(--bird)}
+.t-check{background:var(--good-soft); color:var(--good)}
+.t-fix{background:var(--warn-soft); color:var(--warn)}
+h2{font-size:1.45rem; margin:0 0 1rem; padding-bottom:.5rem; border-bottom:2px solid var(--line)}
+h3{font-size:1.08rem; margin:2rem 0 .5rem; color:var(--ink)}
+p{margin:0 0 1rem}
+strong{font-weight:600; color:var(--ink)}
+a{color:var(--accent)}
+ul,ol{padding-left:1.3rem; margin:0 0 1rem}
+li{margin:.3rem 0}
+hr{border:0; border-top:1px solid var(--line); margin:2.5rem 0}
+
+/* ── 표 ── */
+.scroll{overflow-x:auto; margin:0 0 1.25rem; border:1px solid var(--line); border-radius:var(--r); background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.93rem}
+th,td{padding:.6rem .85rem; text-align:left; border-bottom:1px solid var(--line)}
+th{background:var(--surface-2); font-weight:600; font-size:.82rem; letter-spacing:.03em; color:var(--ink-soft); white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{font-variant-numeric:tabular-nums; text-align:right}
+
+/* ── 코드 ── */
+code{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.88em;
+  background:var(--code-bg); color:var(--code-ink); padding:.12em .38em; border-radius:4px}
+pre{background:var(--code-bg); color:var(--code-ink); padding:1rem 1.1rem; border-radius:var(--r);
+  overflow-x:auto; margin:0 0 1.25rem; border:1px solid var(--line)}
+pre code{background:none; padding:0; font-size:.86rem; line-height:1.7}
+.blank{background:var(--bird-soft); color:var(--bird); border-radius:3px; padding:0 .2em; font-weight:600}
+.cmt{color:var(--muted)}
+.kw{color:var(--accent); font-weight:600}
+
+/* ── 알림 상자 ── */
+.note{border-left:3px solid var(--muted); padding:.15rem 0 .15rem 1rem; margin:0 0 1.25rem; color:var(--ink-soft)}
+.note p:last-child{margin-bottom:0}
+.warn{border-left-color:var(--warn)}
+.warn b{color:var(--warn)}
+
+/* ── 용어 ── */
+.term{background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:1.1rem 1.25rem; margin:0 0 1rem}
+.term h3{margin:0 0 .55rem; font-size:1.05rem}
+.term .simile{border-left:3px solid var(--accent); padding-left:.85rem; color:var(--ink-soft); margin:.7rem 0}
+.term p:last-child{margin-bottom:0}
+.star{color:var(--bird)}
+
+/* ── 실험 ── */
+.lab{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); margin:1.5rem 0 1.75rem; overflow:hidden}
+.lab-head{padding:.85rem 1.15rem; border-bottom:1px solid var(--line); background:var(--surface-2);
+  display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap}
+.lab-head h3{margin:0; font-size:.95rem}
+.lab-head .hint{font-size:.78rem; color:var(--muted)}
+.lab-body{padding:1.15rem}
+.ctl{display:flex; align-items:center; gap:.85rem; flex-wrap:wrap; margin-bottom:1rem}
+.ctl label{font-size:.82rem; font-weight:600; color:var(--ink-soft); white-space:nowrap}
+input[type=range]{flex:1 1 11rem; min-width:9rem; accent-color:var(--accent); height:1.4rem}
+.val{font-family:"IBM Plex Mono",monospace; font-size:.9rem; font-weight:600; color:var(--accent);
+  font-variant-numeric:tabular-nums; min-width:5.2rem; text-align:right}
+button{font-family:inherit; font-size:.86rem; font-weight:600; padding:.45rem 1rem; border-radius:7px;
+  border:1px solid var(--accent); background:var(--accent); color:var(--surface); cursor:pointer}
+button.ghost{background:transparent; color:var(--accent)}
+button:hover{filter:brightness(1.08)}
+button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:.9rem}
+@media (max-width:32rem){.duo{grid-template-columns:1fr}}
+.pane{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface-2)}
+.pane-t{padding:.5rem .7rem; font-size:.78rem; font-weight:600; border-bottom:1px solid var(--line)}
+.pane-t .sub{display:block; font-weight:400; color:var(--muted); font-size:.72rem;
+  font-family:"IBM Plex Mono",monospace}
+.pane.a .pane-t{background:var(--warn-soft); color:var(--warn)}
+.pane.b .pane-t{background:var(--good-soft); color:var(--good)}
+canvas{display:block; width:100%; height:auto; background:var(--sky)}
+.readout{display:flex; justify-content:space-between; gap:.5rem; padding:.5rem .7rem;
+  font-family:"IBM Plex Mono",monospace; font-size:.8rem; font-variant-numeric:tabular-nums;
+  border-top:1px solid var(--line); background:var(--surface)}
+.readout .big{font-weight:600; font-size:.95rem}
+
+/* ── Inspector 흉내 ── */
+.insp{border:1px solid var(--line); border-radius:8px; background:var(--surface-2); overflow:hidden; font-size:.85rem}
+.insp-t{padding:.45rem .7rem; background:var(--surface); border-bottom:1px solid var(--line);
+  font-weight:600; font-size:.8rem}
+.insp-row{display:flex; justify-content:space-between; padding:.45rem .7rem;
+  font-family:"IBM Plex Mono",monospace; border-bottom:1px solid var(--line)}
+.insp-row:last-child{border-bottom:0}
+.insp-empty{padding:1.1rem .7rem; text-align:center; color:var(--muted); font-size:.82rem}
+
+/* ── 답 접기 ── */
+details{border:1px solid var(--line); border-radius:var(--r); background:var(--surface); margin:0 0 1.25rem}
+summary{padding:.9rem 1.15rem; cursor:pointer; font-weight:600; list-style:none; display:flex;
+  align-items:center; gap:.6rem}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸"; color:var(--accent); font-size:.9rem}
+details[open] summary::before{content:"▾"}
+details[open] summary{border-bottom:1px solid var(--line)}
+.det-body{padding:1.15rem 1.15rem .3rem}
+.gate{font-size:.82rem; color:var(--muted); font-weight:400; margin-left:auto; text-align:right}
+
+/* ── 체크리스트 ── */
+.checks{list-style:none; padding:0}
+.checks li{display:flex; gap:.65rem; align-items:flex-start; padding:.45rem 0; border-bottom:1px solid var(--line)}
+.checks li:last-child{border-bottom:0}
+.checks input{margin-top:.42rem; accent-color:var(--good); width:1rem; height:1rem; flex:0 0 auto}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="crumb"><b>cp-07</b><span>2부 · 새를 띄운다</span></div>
+    <h1>숫자를 코드 밖에서 만지고,<br>어느 PC에서나 같게 만든다</h1>
+    <div class="goal">
+      <span class="k">목표</span>
+      <p>낙하 속도를 <strong>코드를 열지 않고</strong> Inspector에서 바꾼다. 그리고 <strong>어느 PC에서나 같은 속도로</strong> 떨어지게 만든다.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<p>06번에서 남긴 두 가지 불편을 여기서 해결한다. <strong>이 수업에서 가장 어려운 개념이 나온다.</strong> 천천히 가자.</p>
+
+<section>
+  <span class="tag t-concept">알아야 할 것</span>
+  <h2>개념</h2>
+
+  <div class="term">
+    <h3><code>public</code> 과 <code>private</code></h3>
+    <p>“이 상자를 밖에서 볼 수 있게 할까?” 를 정하는 말이다. <strong>아무것도 안 쓰면 <code>private</code></strong> 이다. 지금까지 쓴 변수들이 Inspector에 안 보였던 이유다.</p>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head">
+      <h3>실험 · <code>public</code>을 붙이면 어떻게 되나</h3>
+      <span class="hint">눌러서 바꿔보자</span>
+    </div>
+    <div class="lab-body">
+      <div class="ctl">
+        <button id="pubBtn" class="ghost">public 붙이기</button>
+        <span class="val" id="pubState" style="min-width:auto">지금: private</span>
+      </div>
+      <div class="duo">
+        <div>
+          <pre style="margin:0"><code>public class BirdMove : MonoBehaviour
+{
+<span id="pubLine">    float fallSpeed = 3f;</span>
+
+    void Update()
+    {
+        ...
+    }
+}</code></pre>
+        </div>
+        <div class="insp">
+          <div class="insp-t">Inspector — Bird Move (Script)</div>
+          <div id="inspBody">
+            <div class="insp-empty">칸이 하나도 없다</div>
+          </div>
+        </div>
+      </div>
+      <p style="margin:1rem 0 0; font-size:.88rem; color:var(--muted)">변수가 <strong>메서드 밖, <code>class</code> 안</strong>에 있어야 노출된다. <code>Update()</code> 안에 있으면 <code>public</code>을 붙여도 안 보인다.</p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <p><b>⚠ Inspector 값이 코드보다 세다.</b> <code>public float fallSpeed = 3f;</code> 의 <code>3f</code>는 <strong>“처음 만들 때의 기본값”</strong>일 뿐이다. 한 번 칸이 생기면 Unity는 씬에 저장된 값을 쓴다. <strong>코드를 고쳐도 Inspector 값은 안 바뀐다.</strong></p>
+  </div>
+
+  <div class="term">
+    <h3>프레임레이트 (FPS)</h3>
+    <p><strong>1초에 화면을 몇 장 그리는지</strong>다. 좋은 PC는 60장·120장, 느린 PC는 30장·20장. <strong>PC마다 다르다.</strong></p>
+  </div>
+
+  <div class="term">
+    <h3><code>Time.deltaTime</code> <span class="star">★</span></h3>
+    <p><strong>직전 프레임에서 지금 프레임까지 걸린 시간(초)</strong>이다.</p>
+    <p class="simile"><strong>빠른 PC는 작고, 느린 PC는 크다.</strong> 정확히 반대로 움직인다.</p>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head">
+      <h3>실험 · fps가 바뀌면 <code>deltaTime</code>은 얼마가 되나</h3>
+    </div>
+    <div class="lab-body">
+      <div class="ctl">
+        <label for="dtFps">1초에 그리는 장수</label>
+        <input type="range" id="dtFps" min="5" max="144" step="1" value="60">
+        <span class="val" id="dtFpsV">60 장</span>
+      </div>
+      <div class="scroll" style="margin:0">
+        <table>
+          <tr><th>한 장에 걸리는 시간 (<code>deltaTime</code>)</th><td class="num" id="dtVal">0.0167 초</td></tr>
+          <tr><th>초당 3칸으로 정했을 때 한 프레임 이동</th><td class="num" id="dtMove">0.050 칸</td></tr>
+          <tr><th>1초 동안 총 이동</th><td class="num" id="dtTotal">3.000 칸</td></tr>
+        </table>
+      </div>
+      <p style="margin:1rem 0 0; font-size:.88rem; color:var(--muted)">장수를 아무리 바꿔도 <strong>1초 동안 총 이동은 3칸에서 안 변한다.</strong> 이게 <code>deltaTime</code>이 하는 일의 전부다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tag t-do">해보기</span>
+  <h2>직접 돌려보자</h2>
+
+  <p>말로 백 번 듣는 것보다 한 번 보는 게 빠르다. <strong>같은 새 두 마리를 같은 fps로 떨어뜨린다.</strong> 왼쪽은 06번 방식(곱하기 없음), 오른쪽은 07번 방식(<code>deltaTime</code> 곱함)이다.</p>
+
+  <div class="lab">
+    <div class="lab-head">
+      <h3>실험 · 곱하기 하나가 만드는 차이</h3>
+      <span class="hint">슬라이더를 움직이고 다시 떨어뜨려 보자</span>
+    </div>
+    <div class="lab-body">
+      <div class="ctl">
+        <label for="fps">1초에 그리는 장수</label>
+        <input type="range" id="fps" min="5" max="120" step="1" value="60">
+        <span class="val" id="fpsV">60 장</span>
+        <button id="run">다시 떨어뜨리기</button>
+      </div>
+      <div class="duo">
+        <div class="pane a">
+          <div class="pane-t">06번 방식<span class="sub">position += fallSpeed</span></div>
+          <canvas id="cA" width="300" height="200" aria-label="deltaTime 없이 떨어지는 새"></canvas>
+          <div class="readout"><span>걸린 시간</span><span class="big" id="tA">—</span></div>
+        </div>
+        <div class="pane b">
+          <div class="pane-t">07번 방식<span class="sub">position += fallSpeed * deltaTime</span></div>
+          <canvas id="cB" width="300" height="200" aria-label="deltaTime을 곱해 떨어지는 새"></canvas>
+          <div class="readout"><span>걸린 시간</span><span class="big" id="tB">—</span></div>
+        </div>
+      </div>
+      <div class="scroll" style="margin:1rem 0 0">
+        <table>
+          <thead><tr><th>1초에 그리는 장수</th><th class="num">06번 방식</th><th class="num">07번 방식</th></tr></thead>
+          <tbody id="tbl"></tbody>
+        </table>
+      </div>
+      <p style="margin:1rem 0 0; font-size:.88rem; color:var(--muted)">왼쪽은 fps에 따라 <strong>몇 배씩 달라진다.</strong> 오른쪽은 <strong>거의 안 변한다.</strong></p>
+    </div>
+  </div>
+
+  <h3>코드 고치기</h3>
+  <pre><code>using UnityEngine;
+
+public class BirdMove : MonoBehaviour
+{
+    <span class="blank">______</span> float fallSpeed = <span class="blank">____</span>;
+
+    void Update()
+    {
+        transform.position += new Vector3(0f, -fallSpeed * <span class="blank">______________</span>, 0f);
+    }
+}</code></pre>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>빈칸</th><th>힌트</th></tr></thead>
+      <tbody>
+        <tr><td><code>float</code> 앞</td><td>Inspector에 보이게 하는 말</td></tr>
+        <tr><td><code>fallSpeed</code> 값</td><td><strong>1초에</strong> 몇 칸 갈 것인가. 06번과 같은 느낌을 내려면 <code>0.05 × 60</code></td></tr>
+        <tr><td>곱하기 뒤</td><td>이번 프레임이 걸린 시간. <code>Time.</code> 으로 시작한다</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <p><b>⚠ 단위가 바뀐다.</b> 06번의 <code>0.05</code>는 <strong>한 프레임에</strong> 갈 거리였고, 07번의 값은 <strong>1초에</strong> 갈 거리다. 값이 60배 커진 게 아니라 <strong>뜻이 달라진 것</strong>이다.</p>
+  </div>
+</section>
+
+<section>
+  <span class="tag t-check">확인하기</span>
+  <h2>이렇게 되면 성공</h2>
+  <ul class="checks">
+    <li><input type="checkbox" id="k1"><label for="k1"><code>Bird</code>의 Inspector에 <strong>Fall Speed</strong> 칸이 보인다</label></li>
+    <li><input type="checkbox" id="k2"><label for="k2"><strong>코드를 열지 않고</strong> Inspector에서 낙하 속도를 바꿀 수 있다</label></li>
+    <li><input type="checkbox" id="k3"><label for="k3"><code>targetFrameRate</code> <strong>10과 60</strong>에서 사라진 시각의 차이가 <strong>0.3초 이내</strong>다</label></li>
+    <li><input type="checkbox" id="k4"><label for="k4">실험용 코드(<code>Start</code> 덩어리, <code>Debug.Log</code>)를 지웠다</label></li>
+  </ul>
+
+  <div class="note">
+    <p><strong>말로 설명해보기 <span class="star">★</span></strong><br>
+    왜 <code>Time.deltaTime</code>을 곱할까? 곱하지 않으면 무슨 일이 생길까? <strong>자기 말로 설명해보자.</strong> 설명할 수 있으면 통과다. 못 하면 넘어가지 말자.</p>
+  </div>
+</section>
+
+<section>
+  <span class="tag t-fix">안 되면</span>
+  <h2>막혔을 때</h2>
+
+  <h3>Inspector에 <code>Fall Speed</code> 칸이 안 보인다</h3>
+  <p><code>public</code>을 안 붙였거나, 변수가 <code>Update()</code> <strong>안</strong>에 있다. 위의 첫 번째 실험에서 두 경우를 다 눌러보자.</p>
+
+  <h3>코드의 숫자를 고쳤는데 안 바뀐다</h3>
+  <p><strong>Inspector 값이 코드보다 세다.</strong> 값은 Inspector에서 바꾸자. 굳이 코드 기본값으로 되돌리려면 <code>Bird Move (Script)</code> 오른쪽 점 세 개(⋮) → <code>Reset</code>.</p>
+
+  <h3>새가 너무 느리다</h3>
+  <p>값을 <code>0.05</code> 그대로 뒀다. <strong>단위가 바뀌었다.</strong> 06번과 같은 느낌을 내려면 <code>0.05 × 60 = 3</code>.</p>
+
+  <h3><code>targetFrameRate</code>를 바꿔도 안 느려진다</h3>
+  <p><strong>vSync가 켜져 있으면 <code>targetFrameRate</code>가 무시된다.</strong> <code>Edit &gt; Project Settings &gt; Quality</code>에서 <code>V Sync Count</code>를 <code>Don't Sync</code>로. <span style="color:var(--muted)">(이 교재의 프로젝트는 처음부터 꺼져 있다)</span></p>
+</section>
+
+<section>
+  <h2 style="border:0; padding:0; margin-bottom:.5rem">답</h2>
+  <details>
+    <summary>완성 코드 보기 <span class="gate">스스로 해본 뒤에 열자</span></summary>
+    <div class="det-body">
+      <pre><code>using UnityEngine;
+
+public class BirdMove : MonoBehaviour
+{
+    public float fallSpeed = 3f;
+
+    void Update()
+    {
+        transform.position += new Vector3(0f, -fallSpeed * Time.deltaTime, 0f);
+    }
+}</code></pre>
+      <p><strong>06번에서 바뀐 곳은 세 군데다.</strong></p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>바뀐 것</th><th>왜</th></tr></thead>
+          <tbody>
+            <tr><td><code>Update</code> 안 → 클래스 바로 밑</td><td>Inspector에 노출하려면 메서드 밖이어야 한다</td></tr>
+            <tr><td><code>public</code> 추가</td><td>밖에서 볼 수 있게</td></tr>
+            <tr><td><code>* Time.deltaTime</code></td><td>“1초에 갈 거리”에 이번 프레임 시간을 곱해 실제 이동량을 구한다</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2>더 알고 싶으면</h2>
+  <h3>Unity에서 실제로 재본 값</h3>
+  <p>이 교재를 만들면서 진짜 Unity로 측정한 값이다. 위 실험과 같은 이야기다.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>방식</th><th class="num">빠를 때</th><th class="num">느릴 때</th><th class="num">차이</th></tr></thead>
+      <tbody>
+        <tr><td>06번 (곱하기 없음)</td><td class="num">1.98초 <span style="color:var(--muted)">60fps</span></td><td class="num">3.64초 <span style="color:var(--muted)">30fps</span></td><td class="num" style="color:var(--warn); font-weight:600">1.653초</td></tr>
+        <tr><td>07번 (<code>deltaTime</code>)</td><td class="num">1.84초 <span style="color:var(--muted)">60fps</span></td><td class="num">1.93초 <span style="color:var(--muted)">10fps</span></td><td class="num" style="color:var(--good); font-weight:600">0.086초</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>07번 쪽은 <strong>10fps</strong>로 훨씬 더 극단적인 조건인데도 차이가 <strong>20분의 1</strong>이다.</p>
+
+  <h3>그럼 완전히 똑같아지나</h3>
+  <p><strong>아니다. 0.086초가 남았다.</strong> 10fps에서는 한 프레임에 0.34칸씩 뛴다. 사라지는 지점을 정확히 밟지 못하고 <strong>넘어가버린다.</strong> 그 초과분이 오차로 남는다. 그래서 기준이 “완전히 같다”가 아니라 <strong>“0.3초 이내”</strong>인 것이다.</p>
+
+  <h3>앞으로 계속 나온다</h3>
+  <p><strong>움직임을 다루는 곳마다 <code>Time.deltaTime</code>을 곱한다.</strong> 11번(파이프 이동), 13번(시간 재기)에서 다시 만난다. 13번에서는 곱하는 게 아니라 <strong>더하는</strong> 데 쓴다.</p>
+</section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── 실험 1: public 토글 ── */
+  var isPub = false;
+  var pubBtn = document.getElementById('pubBtn');
+  var pubLine = document.getElementById('pubLine');
+  var pubState = document.getElementById('pubState');
+  var inspBody = document.getElementById('inspBody');
+  function renderPub(){
+    if(isPub){
+      pubLine.innerHTML = '    <span class="kw">public</span> float fallSpeed = 3f;';
+      pubState.textContent = '지금: public';
+      inspBody.innerHTML = '<div class="insp-row"><span>Fall Speed</span><span>3</span></div>';
+      pubBtn.textContent = 'public 떼기';
+    } else {
+      pubLine.textContent = '    float fallSpeed = 3f;';
+      pubState.textContent = '지금: private';
+      inspBody.innerHTML = '<div class="insp-empty">칸이 하나도 없다</div>';
+      pubBtn.textContent = 'public 붙이기';
+    }
+  }
+  pubBtn.addEventListener('click', function(){ isPub = !isPub; renderPub(); });
+  renderPub();
+
+  /* ── 실험 2: deltaTime 계산기 ── */
+  var dtFps = document.getElementById('dtFps');
+  function renderDt(){
+    var f = +dtFps.value, dt = 1/f;
+    document.getElementById('dtFpsV').textContent = f + ' 장';
+    document.getElementById('dtVal').textContent = dt.toFixed(4) + ' 초';
+    document.getElementById('dtMove').textContent = (3*dt).toFixed(3) + ' 칸';
+    document.getElementById('dtTotal').textContent = (3*dt*f).toFixed(3) + ' 칸';
+  }
+  dtFps.addEventListener('input', renderDt);
+  renderDt();
+
+  /* ── 실험 3: 낙하 비교 ──
+     Unity 좌표를 그대로 옮긴다. 화면 y = 5 ~ -5, 새 크기 1칸,
+     y <= -5.5 가 되면 완전히 사라진 것으로 본다.            */
+  var TOP = 5, BOT = -5, GONE = -5.5, START_Y = 0;
+  var STEP_PER_FRAME = 0.05;   // 06번: 한 프레임에 0.05칸
+  var UNITS_PER_SEC  = 3;      // 07번: 1초에 3칸
+
+  function Sim(canvas, useDelta){
+    this.c = canvas; this.ctx = canvas.getContext('2d');
+    this.useDelta = useDelta; this.reset();
+  }
+  Sim.prototype.reset = function(){ this.y = START_Y; this.t = 0; this.frames = 0; this.done = false; };
+  Sim.prototype.step = function(dt){
+    if(this.done) return;
+    this.y -= this.useDelta ? UNITS_PER_SEC * dt : STEP_PER_FRAME;
+    this.t += dt; this.frames++;
+    if(this.y <= GONE) this.done = true;
+  };
+  Sim.prototype.draw = function(){
+    var ctx = this.ctx, W = this.c.width, H = this.c.height;
+    var css = getComputedStyle(document.documentElement);
+    var sky = css.getPropertyValue('--sky').trim() || '#87CEEB';
+    var grass = css.getPropertyValue('--grass').trim() || '#4C9A2A';
+    ctx.fillStyle = sky; ctx.fillRect(0,0,W,H);
+    var toPx = function(wy){ return (TOP - wy) / (TOP - BOT) * H; };
+    // 바닥: 중심 -4.5, 두께 1칸 → 윗면 -4
+    ctx.fillStyle = grass;
+    ctx.fillRect(0, toPx(-4), W, H - toPx(-4));
+    // 새: 1칸 사각형, 화면 왼쪽 1/3
+    var unit = H / (TOP - BOT);
+    ctx.fillStyle = '#FFC800';
+    ctx.fillRect(W*0.30 - unit/2, toPx(this.y) - unit/2, unit, unit);
+  };
+
+  var simA = new Sim(document.getElementById('cA'), false);
+  var simB = new Sim(document.getElementById('cB'), true);
+  var fps = document.getElementById('fps');
+  var fpsV = document.getElementById('fpsV');
+  var tA = document.getElementById('tA'), tB = document.getElementById('tB');
+  var raf = null, acc = 0, last = 0;
+
+  function fmt(s){ return s.done ? s.t.toFixed(2)+'초' : s.t.toFixed(2)+'초…'; }
+
+  function loop(now){
+    var real = Math.min((now - last)/1000, 0.25); last = now;
+    var target = +fps.value, dt = 1/target;
+    acc += real;
+    var guard = 0;
+    while(acc >= dt && guard < 400){ simA.step(dt); simB.step(dt); acc -= dt; guard++; }
+    simA.draw(); simB.draw();
+    tA.textContent = fmt(simA); tB.textContent = fmt(simB);
+    if(simA.done && simB.done){ raf = null; return; }
+    raf = requestAnimationFrame(loop);
+  }
+
+  function run(){
+    if(raf) cancelAnimationFrame(raf);
+    simA.reset(); simB.reset(); acc = 0; last = performance.now();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function renderFps(){
+    var f = +fps.value;
+    fpsV.textContent = f + ' 장';
+    // 표: 계산값 미리 보여주기
+    var rows = [10, 30, 60, 120].map(function(n){
+      var a = 5.5 / (STEP_PER_FRAME * n);
+      var b = 5.5 / UNITS_PER_SEC;
+      var mark = (n === f) ? ' style="background:var(--accent-soft)"' : '';
+      return '<tr'+mark+'><td>'+n+' 장</td><td class="num">'+a.toFixed(2)+'초</td><td class="num">'+b.toFixed(2)+'초</td></tr>';
+    }).join('');
+    document.getElementById('tbl').innerHTML = rows;
+  }
+  fps.addEventListener('input', function(){ renderFps(); run(); });
+  document.getElementById('run').addEventListener('click', run);
+
+  renderFps();
+  simA.draw(); simB.draw();
+
+  // 화면에 들어오면 자동으로 한 번 돌린다
+  if('IntersectionObserver' in window){
+    var seen = false;
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting && !seen){ seen = true; run(); } });
+    }, {threshold:.4}).observe(document.getElementById('cA'));
+  }
+})();
+</script>
