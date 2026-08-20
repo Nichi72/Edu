@@ -1,0 +1,352 @@
+<title>파이프가 흘러온다</title>
+<link rel="stylesheet" href="../../textbook.css">
+<link rel="stylesheet" href="_chapter.css">
+
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>3부 · 장애물을 만든다</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">11</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <input class="search" type="search" placeholder="검색" aria-label="교재 검색">
+      <div class="navpart label">2부 · 새를 띄운다</div>
+      <a class="toc__item" href="#"><span class="toc__num">08</span>스페이스로 위로 튄다</a>
+      <a class="toc__item" href="#"><span class="toc__num">09</span>천장·바닥에 닿으면 죽는다</a>
+      <a class="toc__item" href="#"><span class="toc__num">10</span>낙하를 물리로 넘긴다</a>
+
+      <div class="navpart label">3부 · 장애물을 만든다</div>
+      <div class="toc__current">
+        <div>11 · 파이프 한 쌍이 흘러온다</div>
+        <a class="toc__sub" href="#s1">11.1 새에서 지운 코드를 파이프가 쓴다</a>
+        <a class="toc__sub" href="#s2">11.2 빈 게임오브젝트를 껍데기로</a>
+        <a class="toc__sub" href="#s3">11.3 부모 기준 좌표</a>
+        <a class="toc__sub" href="#s4">11.4 만들어 보자</a>
+        <a class="toc__sub" href="#s5">11.5 확인한다</a>
+        <a class="toc__sub" href="#s6">11.6 막혔을 때</a>
+      </div>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">12</span>프리팹으로 복제한다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">13</span>몇 초마다 계속 나온다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">14</span>지나간 파이프를 치운다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">15</span>높이가 매번 달라진다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">16</span>시작부터 깔려 있다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">17</span>짠 순서대로 내보낸다</a>
+
+      <div class="navfoot">
+        <div class="meta num">3부 진도 · 1 / 7</div>
+        <div class="progress"><div class="progress__bar" style="width:14.3%"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+
+    <section class="section">
+      <div class="eyebrow">Chapter 11</div>
+      <h1>파이프 한 쌍이 흘러온다</h1>
+      <p class="lead">3부가 시작된다. 이제 장애물을 만든다. 그런데 이번에 쓸 코드는 새 것이 아니다. <strong>06~07번에서 새에게 썼다가 10번에서 지워낸 그 코드를 다시 꺼내 쓴다.</strong></p>
+      <div class="meta num">읽는 시간 약 25분 · 실습 2 · 문항 2</div>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">학습 목표</div>
+        <ul class="goals">
+          <li><span class="n">1</span><span>빈 게임오브젝트를 <strong>껍데기</strong>로 써서 여러 물건을 하나로 묶을 수 있다.</span></li>
+          <li><span class="n">2</span><span>자식의 위치가 <strong>부모 기준</strong>이라는 것을 값으로 설명할 수 있다.</span></li>
+          <li><span class="n">3</span><span>새의 낙하 코드와 파이프의 이동 코드가 <strong>뭐가 같고 뭐가 다른지</strong> 말할 수 있다.</span></li>
+        </ul>
+      </div>
+
+      <div class="figure">
+        <img src="../shots/cp-11/passing.png" alt="파이프 한 쌍 사이로 새가 지나가는 화면">
+        <div class="figure__cap">그림 11-1 · 이번 항목을 마치면 이렇게 된다</div>
+        <div class="figure__note">파이프 한 쌍이 오른쪽 화면 밖에서 나타나 왼쪽으로 흘러간다. 아직 하나뿐이고, 지나가면 끝이다.</div>
+      </div>
+    </section>
+
+    <section class="section" id="s1">
+      <div class="eyebrow">11.1</div>
+      <h2>새에서 지운 코드를 파이프가 쓴다</h2>
+
+      <p>10번에서 새의 낙하 코드를 지웠다. 그 코드는 이랬다.</p>
+
+      <div class="code">
+        <div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">06~07번 상태 · 지금은 없다</span></div>
+        <pre><code>transform.position += <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">0f</span>, -fallSpeed * <span class="tok-lit">Time</span>.deltaTime, <span class="tok-str">0f</span>);</code></pre>
+      </div>
+
+      <p>파이프는 <strong>정해진 속도로 정확히 왼쪽으로</strong> 흘러가야 한다. 가속도 필요 없고 부딪혀 튕길 필요도 없다. 그러니 물리를 쓸 이유가 없다. <strong>위 코드를 축만 바꿔 그대로 쓰면 된다.</strong></p>
+
+      <div class="card--soft">10번에서 “물리가 항상 낫지는 않다”고 했던 이유가 여기 있다. 물리는 진짜 물체처럼 움직여야 할 때 좋고, <strong>정해진 대로 정확히 움직여야 할 때는 직접 짜는 편이 낫다.</strong></div>
+
+      <h3>뭐가 같고 뭐가 다른가</h3>
+      <p>코드를 보기 전에 스스로 생각해 보자. 새는 <strong>아래</strong>로 갔고, 파이프는 <strong>왼쪽</strong>으로 간다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>물어볼 것</span><span>답해 보자</span></div>
+        <div class="table__row table__row--2"><span>어느 칸을 바꾸나</span><span><code>Vector3(?, ?, ?)</code> 중 몇 번째 칸인가</span></div>
+        <div class="table__row table__row--2"><span>부호는</span><span>왼쪽으로 가려면 x 가 커져야 하나 작아져야 하나</span></div>
+        <div class="table__row table__row--2"><span><code>Time.deltaTime</code> 은</span><span>이건 계속 일어나는 일인가, 한 번 일어나는 일인가</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="s2">
+      <div class="eyebrow">11.2</div>
+      <h2>빈 게임오브젝트를 껍데기로</h2>
+
+      <p>파이프는 <strong>위·아래 두 개가 한 쌍</strong>이다. 둘 사이에 새가 지나갈 틈이 있다.</p>
+
+      <p>두 개를 따로 움직이면 어떻게 될까? 각각에 이동 스크립트를 붙이면 굴러가긴 한다. 하지만 <strong>속도가 조금이라도 다르면 위아래가 어긋난다.</strong> 나중에 높이를 바꾸거나 지우려 할 때도 두 번씩 해야 한다.</p>
+
+      <p>그래서 <strong>빈 게임오브젝트</strong>를 하나 만들어 껍데기로 쓴다. 눈에 보이는 것은 아무것도 없고, <strong>위치만 갖는 상자</strong>다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>구조</span><span>역할</span></div>
+        <div class="table__row table__row--2"><span><code>PipePair</code> <span class="meta">(빈 게임오브젝트)</span></span><span>껍데기. <strong>이것만 움직인다.</strong> 이동 스크립트는 여기에만 붙인다</span></div>
+        <div class="table__row table__row--2"><span>└ <code>PipeTop</code></span><span>위 파이프. 눈에 보이는 것</span></div>
+        <div class="table__row table__row--2"><span>└ <code>PipeBottom</code></span><span>아래 파이프. 눈에 보이는 것</span></div>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">부모와 자식</span>
+        <span>어떤 오브젝트를 다른 오브젝트 <strong>안으로 끌어다 놓으면</strong> 부모-자식이 된다. <strong>부모가 움직이면 자식이 따라간다.</strong> 부모를 지우면 자식도 같이 지워진다. 이 구조는 12번의 프리팹, 20번의 판정용 오브젝트에서 계속 쓰인다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s3">
+      <div class="eyebrow">11.3</div>
+      <h2>부모 기준 좌표</h2>
+
+      <p>자식이 되고 나면 <strong>Inspector 에 보이는 Position 의 뜻이 달라진다.</strong> 더 이상 “세상에서의 위치”가 아니라 <strong>“부모로부터 얼마나 떨어져 있는가”</strong> 가 된다.</p>
+
+      <p>아래에서 부모를 움직여 보자. <strong>자식의 Inspector 값은 하나도 안 변한다.</strong></p>
+
+      <div class="card lab">
+        <div class="ctl">
+          <label for="px">부모 PipePair 의 x</label>
+          <input type="range" id="px" min="-10" max="11" step="0.5" value="11">
+          <span class="out" id="pxv">11.0</span>
+          <button class="btn" id="reset">되돌리기</button>
+        </div>
+
+        <div class="figure">
+          <div class="figrow" style="grid-template-columns:minmax(260px,1.4fr) minmax(200px,1fr)">
+            <div class="figcell">
+              <div class="figcell__h"><b>Game 뷰</b>부모만 움직인다</div>
+              <canvas id="cv" width="360" height="230" aria-label="파이프가 왼쪽으로 흘러가는 화면"></canvas>
+            </div>
+            <div class="figcell">
+              <div class="figcell__h"><b>Inspector 의 Position</b>자식은 부모 기준</div>
+              <div class="table" style="border-color:#2c2c2c; background:#1a1a1a">
+                <div class="table__row table__row--head table__row--4 table__row--r"
+                     style="background:#1f1f1f; border-color:#2c2c2c; color:#b3b3b3">
+                  <span>오브젝트</span><span>x</span><span>y</span><span>기준</span></div>
+                <div class="table__row table__row--4 table__row--r num"
+                     style="border-color:#2c2c2c; color:#cbcbcb">
+                  <span style="color:#fff">PipePair</span><span id="tx">11.0</span><span>0.0</span><span style="color:#7c7c7c">세상</span></div>
+                <div class="table__row table__row--4 table__row--r num"
+                     style="border-color:#2c2c2c; color:#cbcbcb">
+                  <span style="color:#fff">└ PipeTop</span><span style="color:#7ee2a8">0.0</span><span style="color:#7ee2a8">4.0</span><span style="color:#7c7c7c">부모</span></div>
+                <div class="table__row table__row--4 table__row--r num"
+                     style="border-color:#2c2c2c; color:#cbcbcb">
+                  <span style="color:#fff">└ PipeBottom</span><span style="color:#7ee2a8">0.0</span><span style="color:#7ee2a8">−4.0</span><span style="color:#7c7c7c">부모</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="figure__cap">그림 11-2 · 부모를 움직여도 자식 값은 그대로다</div>
+          <div class="figure__note">초록색 숫자가 자식의 Inspector 값이다. 슬라이더를 아무리 움직여도 변하지 않는다.</div>
+        </div>
+        <p class="meta">이 교재를 만들면서 실제로 쟀다. 파이프가 화면을 가로지르는 <strong>7초 동안</strong> 자식의 부모 기준 위치가 움직인 거리는 <strong>0.000000</strong> 이었다.</p>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">주의</span>
+        <span>자식으로 넣기 <strong>전에</strong> 위치를 맞춰 놓았다면, 자식이 되는 순간 화면에서 위치가 튈 수 있다. 부모 기준으로 값이 다시 계산되기 때문이다. <strong>자식으로 만든 다음에 값을 맞추자.</strong></span>
+      </div>
+    </section>
+
+    <section class="section" id="s4">
+      <div class="eyebrow">11.4</div>
+      <h2>만들어 보자</h2>
+
+      <h3>1 · 껍데기 만들기</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>순서</span><span>할 일</span></div>
+        <div class="table__row table__row--2"><span>1</span><span>Hierarchy 빈 곳에서 오른쪽 클릭 → <code>Create Empty</code></span></div>
+        <div class="table__row table__row--2"><span>2</span><span>이름을 <code>PipePair</code> 로</span></div>
+        <div class="table__row table__row--2"><span>3</span><span>Position 을 <code>(11, 0, 0)</code> 로 <span class="meta">— 화면 오른쪽 끝이 8.89 이므로 11 은 화면 밖이다</span></span></div>
+      </div>
+
+      <h3>2 · 파이프 두 개 만들기</h3>
+      <p><code>3D Object &gt; Cube</code> 로 두 개를 만들고, <strong>Hierarchy 에서 <code>PipePair</code> 위로 끌어다 놓아</strong> 자식으로 만든다. 그 다음 값을 맞춘다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--4"><span>이름</span><span>Position</span><span>Scale</span><span>뜻</span></div>
+        <div class="table__row table__row--4 num"><span>PipeTop</span><span>(0, 4, 0)</span><span>(1.5, 5, 1)</span><span class="meta">아래끝이 y=1.5</span></div>
+        <div class="table__row table__row--4 num"><span>PipeBottom</span><span>(0, −4, 0)</span><span>(1.5, 5, 1)</span><span class="meta">위끝이 y=−1.5</span></div>
+      </div>
+
+      <p><strong>틈은 y = −1.5 ~ 1.5, 즉 3칸이다.</strong> 새가 1칸이니 넉넉하다. 계산해 보자 — 위 파이프는 중심이 4이고 세로 크기가 5이므로 아래끝이 <code>4 − 2.5 = 1.5</code> 다. 02번에서 바닥 윗면을 계산한 것과 같은 방식이다.</p>
+
+      <h3>3 · 색 입히기</h3>
+      <p><code>Assets/Materials</code> 에 <code>PipeMaterial</code> 을 만들고 <code>Base Map</code> 을 <code>2E7D32</code> 로. 두 파이프에 모두 끌어다 놓는다. <span class="meta">바닥보다 진한 초록이라 겹쳐도 구분된다.</span></p>
+
+      <h3>4 · 이동 스크립트</h3>
+      <p><code>Assets/Scripts</code> 에 <code>PipeMove</code> 를 만든다.</p>
+
+      <div class="code">
+        <div class="code__bar">
+          <span class="code__dot"></span><code class="code__name">PipeMove.cs</code>
+          <span class="code__path">Assets/Scripts</span><span class="code__copy">복사</span>
+        </div>
+        <pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+
+<span class="tok-key">public class</span> <span class="tok-lit">PipeMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public float</span> speed = <span class="tok-str">3f</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        transform.position += <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="blank">________________</span>, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>);
+    }
+}</code></pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">가장 중요한 것</span>
+        <span>이 스크립트를 <strong><code>PipePair</code> 에만</strong> 붙인다. 자식 둘에는 <strong>붙이지 않는다.</strong> 부모가 움직이면 자식은 따라간다.</span>
+      </div>
+
+      <details>
+        <summary>정답 확인 <span class="meta" style="margin-left:auto">스스로 채워 본 뒤에 펼치자</span></summary>
+        <div class="det">
+          <div class="code">
+            <div class="code__bar"><span class="code__dot"></span><code class="code__name">PipeMove.cs</code><span class="code__path">Assets/Scripts</span></div>
+            <pre><code>transform.position += <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(-speed * <span class="tok-lit">Time</span>.deltaTime, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>);</code></pre>
+          </div>
+          <div class="table">
+            <div class="table__row table__row--head table__row--4"><span></span><span>새 (06~07번)</span><span>파이프 (11번)</span><span>왜</span></div>
+            <div class="table__row table__row--4"><span>바꾸는 칸</span><span><code>y</code> (두 번째)</span><span><code>x</code> (첫 번째)</span><span>아래 vs 왼쪽</span></div>
+            <div class="table__row table__row--4"><span>부호</span><span><code>−</code></span><span><code>−</code></span><span>둘 다 값이 작아지는 방향</span></div>
+            <div class="table__row table__row--4"><span><code>deltaTime</code></span><span>곱한다</span><span>곱한다</span><span>둘 다 <strong>계속</strong> 일어나는 일</span></div>
+            <div class="table__row table__row--4"><span><code>+=</code></span><span>쓴다</span><span>쓴다</span><span>지금 자리에서 옮긴다</span></div>
+          </div>
+          <div class="card--soft"><strong>거의 다 같다. 바뀐 건 “몇 번째 칸이냐” 하나뿐이다.</strong> 이게 이 항목에서 알아채야 할 것이다. 프로그래밍에서는 이렇게 <strong>이미 만든 것을 조금 바꿔 다시 쓰는 일</strong>이 훨씬 많다.</div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" id="s5">
+      <div class="eyebrow">11.5</div>
+      <h2>확인한다</h2>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:8px">체크리스트</div>
+        <div class="check" data-check><span class="check__box"></span><span>Play 하면 파이프가 오른쪽 화면 밖에서 나타나 왼쪽으로 흘러간다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span><strong>약 7초</strong> 뒤 화면 왼쪽 밖으로 완전히 사라진다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span><strong>부모 하나만 움직이는데 위아래가 함께</strong> 간다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span>자식 둘의 Inspector 에 <strong>이동 스크립트가 없다</strong></span></div>
+      </div>
+
+      <div class="card--soft">이 교재를 만들면서 잰 값 — x=11 에서 출발해 완전히 사라지기까지 <strong>6.888초 / 6.886초</strong>(두 번 측정). 그동안 자식이 부모 기준으로 움직인 거리는 <strong>0.000000</strong>, 위·아래 파이프의 x 차이도 <strong>0.000000</strong> 이었다.</div>
+
+      <h3>문항 1 · 자식에도 스크립트를 붙이면</h3>
+      <p><code>PipeTop</code> 과 <code>PipeBottom</code> 에도 <code>PipeMove</code> 를 붙이면 어떻게 되나?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">A</span><span>똑같다. 어차피 같은 속도니까</span></div>
+        <div class="choice" data-q="1" data-ok="1"><span class="choice__tag">B</span><span>두 배 속도로 흘러간다</span></div>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">C</span><span>자식은 안 움직이고 부모만 움직인다</span></div>
+      </div>
+      <div class="explain" data-explain="1" hidden><strong>부모가 미는 만큼 자식이 따라가고, 자식이 자기 스크립트로 또 움직인다.</strong> 그래서 자식만 두 배로 빨라져 부모(껍데기)를 앞질러 간다. 눈으로는 파이프가 너무 빨리 지나가는 것으로 보인다.</div>
+
+      <h3>문항 2 · 부모를 움직였을 때 자식의 Inspector</h3>
+      <p><code>PipePair</code> 가 x=11 에서 x=0 으로 움직였다. 이때 <code>PipeTop</code> 의 Inspector 에 보이는 Position x 는?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="2" data-ok="1"><span class="choice__tag">A</span><span>0 — 처음부터 끝까지 안 변한다</span></div>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">B</span><span>11 에서 0 으로 같이 변한다</span></div>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">C</span><span>−11 이 된다</span></div>
+      </div>
+      <div class="explain" data-explain="2" hidden><strong>자식의 Position 은 “부모로부터 얼마나 떨어져 있는가”</strong> 다. <code>PipeTop</code> 은 부모와 같은 x 에 있으므로 처음부터 끝까지 0 이다. 세상에서의 위치는 <code>부모 위치 + 자식 위치</code> 로 계산된다.</div>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">말로 설명해 보기</span>
+        <span>06~07번에서 쓴 새의 낙하 코드와 이번 파이프 코드는 <strong>뭐가 같고 뭐가 다른가?</strong> 자기 말로 설명할 수 있으면 통과다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s6">
+      <div class="eyebrow">11.6</div>
+      <h2>막혔을 때</h2>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>증상</span><span>원인과 해결</span></div>
+        <div class="table__row table__row--2"><span>파이프가 오른쪽으로 간다</span><span>부호를 안 붙였다. <code>-speed</code> 로</span></div>
+        <div class="table__row table__row--2"><span>위아래가 어긋나며 흘러간다</span><span>자식에도 <code>PipeMove</code> 를 붙였다. <strong>부모에만</strong> 붙인다</span></div>
+        <div class="table__row table__row--2"><span>시작부터 화면에 보인다</span><span><code>PipePair</code> 의 x 가 11 이 아니다. 화면 오른쪽 끝이 8.89 이므로 그보다 커야 밖에서 나타난다</span></div>
+        <div class="table__row table__row--2"><span>자식으로 넣었더니 위치가 튀었다</span><span>자식이 되면 값이 부모 기준으로 다시 계산된다. <strong>자식으로 만든 다음</strong> 값을 맞추자</span></div>
+        <div class="table__row table__row--2"><span>파이프가 너무 빠르다/느리다</span><span><code>PipePair</code> 의 Inspector 에서 <code>Speed</code> 를 바꾼다. <strong>다만 확인이 끝나면 3 으로 되돌리자</strong> — 13번과 16번이 이 값에 기댄다</span></div>
+        <div class="table__row table__row--2"><span>틈이 너무 좁다/넓다</span><span>파이프의 Position y 를 ±4 에서 조절한다. 멀어질수록 틈이 넓어진다</span></div>
+      </div>
+
+      <h3>12번 예고</h3>
+      <div class="card--soft">지금은 파이프가 <strong>하나뿐</strong>이고, 지나가 버리면 끝이다. 게임이 되려면 계속 나와야 한다. 그렇다고 손으로 100개를 만들 수는 없다. <strong>12번에서 파이프를 “설계도”로 만들어 코드로 찍어낸다.</strong></div>
+    </section>
+
+    <section class="section">
+      <div class="navpair">
+        <a href="#"><div class="l">이전</div><div class="t">10 · 낙하를 물리로 넘긴다</div></a>
+        <a href="#"><div class="l">다음</div><div class="t">12 · 파이프를 설계도로 만들어 복제한다</div></a>
+      </div>
+    </section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">11.1 새에서 지운 코드를 파이프가 쓴다</a>
+    <a class="railitem" href="#s2">11.2 빈 게임오브젝트를 껍데기로</a>
+    <a class="railitem" href="#s3">11.3 부모 기준 좌표</a>
+    <a class="railitem" href="#s4">11.4 만들어 보자</a>
+    <a class="railitem" href="#s5">11.5 확인한다</a>
+    <a class="railitem" href="#s6">11.6 막혔을 때</a>
+  </aside>
+</div>
+
+<script src="_chapter.js"></script>
+<script>
+(function(){
+  "use strict";
+  var TOP = 5, BOT = -5, HALF_W = 8.889;
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var px = document.getElementById('px'), pxv = document.getElementById('pxv'), tx = document.getElementById('tx');
+
+  function draw(){
+    var W = cv.width, H = cv.height;
+    var toX = function(wx){ return (wx + HALF_W) / (HALF_W * 2) * W; };
+    var toY = function(wy){ return (TOP - wy) / (TOP - BOT) * H; };
+    var u = H / (TOP - BOT);
+
+    ctx.fillStyle = '#87ceeb'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#4c9a2a'; ctx.fillRect(0, toY(-4), W, H - toY(-4));
+
+    var x = +px.value;
+    ctx.fillStyle = '#2e7d32';
+    // 위: 중심 y=4, 세로 5칸 / 아래: 중심 y=-4
+    ctx.fillRect(toX(x) - u * 0.75, toY(4 + 2.5), u * 1.5, u * 5);
+    ctx.fillRect(toX(x) - u * 0.75, toY(-4 + 2.5), u * 1.5, u * 5);
+
+    ctx.fillStyle = '#ffc800';
+    ctx.fillRect(toX(-3) - u / 2, toY(0) - u / 2, u, u);
+
+    pxv.textContent = x.toFixed(1);
+    tx.textContent = x.toFixed(1);
+  }
+  px.addEventListener('input', draw);
+  document.getElementById('reset').addEventListener('click', function(){ px.value = 11; draw(); });
+  draw();
+})();
+</script>

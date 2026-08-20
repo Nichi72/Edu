@@ -1,0 +1,96 @@
+/* 챕터 공통 — textbook.css 다음에 링크한다.
+   DESIGN.md 의 :root 변수만 쓴다. 새 색·크기 값을 만들지 않는다. */
+
+/* 상단 브레드크럼 */
+.topbar{position:sticky; top:0; z-index:10; height:60px; display:flex; align-items:center;
+  background:rgba(255,255,255,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.topbar__in{max-width:1680px; margin:0 auto; padding:0 40px; width:100%;
+  display:flex; align-items:center; gap:12px; font-size:13px; color:var(--text-subtle)}
+.topbar__sep{color:var(--text-faint)}
+.topbar__now{color:var(--text); font-weight:700}
+
+/* 좌측 목차 */
+.navblock{position:sticky; top:60px; padding:52px 0 40px; display:flex; flex-direction:column; gap:8px}
+.search{width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:7px;
+  font-family:var(--font); font-size:13.5px; color:var(--text-body); background:var(--bg)}
+.search::placeholder{color:var(--text-faint)}
+.search:focus{outline:none; border-color:var(--line-strong)}
+.navpart{margin:16px 0 4px}
+.navfoot{margin-top:20px; padding-top:16px; border-top:1px solid var(--line);
+  display:flex; flex-direction:column; gap:8px}
+
+/* 우측 레일 */
+.railtitle{margin-bottom:10px}
+.railitem{display:block; padding:5px 0; font-size:13px; color:var(--text-subtle)}
+.railitem:hover{color:var(--accent-deep)}
+.railitem.is-here{color:var(--accent-text); font-weight:700}
+
+/* 학습 목표 */
+.goals{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+.goals li{display:flex; gap:12px; font-size:15px; line-height:1.6; color:var(--text-body)}
+.goals .n{flex:0 0 auto; color:var(--accent); font-weight:700; font-variant-numeric:tabular-nums}
+
+/* 표 — 열 수가 다를 때만 그리드를 바꾼다 */
+.table__row--2{grid-template-columns:minmax(140px,240px) minmax(0,1fr)}
+.table__row--4{grid-template-columns:minmax(80px,120px) repeat(3, minmax(0,1fr))}
+.table__row--5{grid-template-columns:minmax(80px,110px) repeat(4, minmax(0,1fr))}
+.table__row--r > *:not(:first-child){text-align:right}
+
+/* 실험 조작부 */
+.lab{display:flex; flex-direction:column; gap:14px}
+.ctl{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.ctl label{font-size:12.5px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--text-subtle); white-space:nowrap}
+.ctl input[type=range]{flex:1 1 180px; min-width:140px; accent-color:var(--accent); height:20px}
+.ctl .out{font-family:var(--font-code); font-size:13.5px; font-weight:700; color:var(--accent-deep);
+  font-variant-numeric:tabular-nums; min-width:78px; text-align:right}
+.btn{font-family:var(--font); font-size:13px; font-weight:700; padding:7px 16px; border-radius:9999px;
+  border:1px solid var(--line-strong); background:var(--bg); color:var(--text-body); cursor:pointer;
+  transition:background-color .16s ease, border-color .16s ease, color .16s ease}
+.btn:hover{background:var(--bg-subtle)}
+.btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.btn--go{border-color:var(--accent); color:var(--accent-text)}
+.btn--go:hover{background:var(--accent-bg-2)}
+
+/* 그림 패널 내부 */
+.figrow{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px}
+.figcell{display:flex; flex-direction:column; gap:8px}
+.figcell__h{font-family:var(--font-code); font-size:12px; color:#b3b3b3}
+.figcell__h b{display:block; font-family:var(--font); font-size:13px; color:#fff; margin-bottom:2px}
+canvas{display:block; width:100%; height:auto; border-radius:6px; background:#87ceeb}
+.figstat{display:flex; justify-content:space-between; align-items:baseline;
+  font-family:var(--font-code); font-size:12px; color:#b3b3b3; font-variant-numeric:tabular-nums}
+.figstat b{font-size:15px; color:#fff}
+.figure img{display:block; width:100%; height:auto; border-radius:6px}
+
+/* 스크린샷 위 번호 마커 */
+.shot{position:relative}
+.shot .pin{position:absolute; width:22px; height:22px; border-radius:50%;
+  background:var(--accent); color:#fff; font-size:12px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; transform:translate(-50%,-50%);
+  font-variant-numeric:tabular-nums}
+
+/* 빈칸 */
+.blank{border-bottom:2px solid var(--code-str); color:var(--code-str); padding:0 6px}
+
+/* 접는 정답 */
+details{border:1px solid var(--line); border-radius:var(--radius-card)}
+summary{padding:15px 20px; cursor:pointer; list-style:none; display:flex; align-items:center; gap:10px;
+  font-size:15px; font-weight:700; color:var(--text)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+"; color:var(--accent); font-weight:700; font-size:16px}
+details[open] summary::before{content:"−"}
+details[open] summary{border-bottom:1px solid var(--line)}
+.det{padding:20px; display:flex; flex-direction:column; gap:16px}
+
+/* 퀴즈 */
+.answers{display:flex; flex-direction:column; gap:8px}
+
+/* 이전·다음 */
+.navpair{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+.navpair a{display:block; border:1px solid var(--line); border-radius:var(--radius-card); padding:16px 20px}
+.navpair a:hover{background:var(--bg-subtle)}
+.navpair .l{font-size:12px; color:var(--text-faint)}
+.navpair .t{font-size:15px; font-weight:700; color:var(--text)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
