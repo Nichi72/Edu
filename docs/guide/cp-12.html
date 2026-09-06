@@ -1,0 +1,345 @@
+<title>프리팹으로 복제한다</title>
+<link rel="stylesheet" href="../../textbook.css">
+<link rel="stylesheet" href="_chapter.css">
+
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>3부 · 장애물을 만든다</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">12</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <input class="search" type="search" placeholder="검색" aria-label="교재 검색">
+      <div class="navpart label">2부 · 새를 띄운다</div>
+      <a class="toc__item" href="#"><span class="toc__num">09</span>천장·바닥에 닿으면 죽는다</a>
+      <a class="toc__item" href="#"><span class="toc__num">10</span>낙하를 물리로 넘긴다</a>
+
+      <div class="navpart label">3부 · 장애물을 만든다</div>
+      <a class="toc__item" href="#"><span class="toc__num">11</span>파이프가 흘러온다</a>
+      <div class="toc__current">
+        <div>12 · 파이프를 설계도로 만들어 복제한다</div>
+        <a class="toc__sub" href="#s1">12.1 손으로 100개를 만들 수는 없다</a>
+        <a class="toc__sub" href="#s2">12.2 설계도와 실물</a>
+        <a class="toc__sub" href="#s3">12.3 참조 — 칸에 끌어다 넣기</a>
+        <a class="toc__sub" href="#s4">12.4 만들어 보자</a>
+        <a class="toc__sub" href="#s5">12.5 확인한다</a>
+        <a class="toc__sub" href="#s6">12.6 막혔을 때</a>
+      </div>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">13</span>몇 초마다 계속 나온다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">14</span>지나간 파이프를 치운다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">15</span>높이가 매번 달라진다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">16</span>시작부터 깔려 있다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">17</span>짠 순서대로 내보낸다</a>
+
+      <div class="navfoot">
+        <div class="meta num">3부 진도 · 2 / 7</div>
+        <div class="progress"><div class="progress__bar" style="width:28.6%"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+
+    <section class="section">
+      <div class="eyebrow">Chapter 12</div>
+      <h1>파이프를 설계도로 만들어<br>복제한다</h1>
+      <p class="lead">11번에서 만든 파이프는 하나뿐이고, 지나가 버리면 끝이다. 게임이 되려면 계속 나와야 한다. 그렇다고 손으로 100개를 만들 수는 없다. <strong>하나를 “설계도”로 만들어 두고, 코드로 찍어낸다.</strong></p>
+      <div class="meta num">읽는 시간 약 25분 · 실습 2 · 문항 2</div>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">학습 목표</div>
+        <ul class="goals">
+          <li><span class="n">1</span><span>씬의 오브젝트를 <strong>프리팹</strong>으로 저장할 수 있다.</span></li>
+          <li><span class="n">2</span><span>프리팹(설계도)과 씬 인스턴스(실물)의 차이를 말할 수 있다.</span></li>
+          <li><span class="n">3</span><span><code>Instantiate()</code> 로 코드에서 오브젝트를 만들 수 있다.</span></li>
+          <li><span class="n">4</span><span><code>public GameObject</code> 칸에 <strong>Inspector 로 참조를 연결</strong>할 수 있다.</span></li>
+        </ul>
+      </div>
+
+      <div class="figure">
+        <img src="../shots/cp-12/spawned.png" alt="코드로 만들어진 파이프가 화면에 있는 모습">
+        <div class="figure__cap">그림 12-1 · 씬에 없던 파이프가 Play 하면 생긴다</div>
+        <div class="figure__note">Hierarchy 를 보면 <code>PipePair(Clone)</code> 이라는 이름으로 나타난다. Stop 하면 사라진다.</div>
+      </div>
+    </section>
+
+    <section class="section" id="s1">
+      <div class="eyebrow">12.1</div>
+      <h2>손으로 100개를 만들 수는 없다</h2>
+
+      <p>파이프를 계속 나오게 하려면 방법이 두 가지다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>방법</span><span>문제</span></div>
+        <div class="table__row table__row--2"><span>손으로 100개 만들어 늘어놓기</span><span>만드는 데만 한나절. <strong>색 하나 바꾸려면 100번 고쳐야 한다.</strong> 게임이 길어지면 부족해진다</span></div>
+        <div class="table__row table__row--2"><span>하나를 설계도로 두고 코드로 찍어내기</span><span>없다. 이게 정답이다</span></div>
+      </div>
+
+      <p>Unity 에서 이 “설계도”를 <strong>프리팹(Prefab)</strong> 이라고 한다.</p>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">이미 겪어봤다</span>
+        <span>03번에서 머티리얼 하나를 새와 바닥에 다 적용했을 때, <strong>통 색을 바꾸니 둘 다 바뀌었다.</strong> 프리팹도 같은 성질이다. 하나를 고치면 그것으로 만든 것이 전부 바뀐다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s2">
+      <div class="eyebrow">12.2</div>
+      <h2>설계도와 실물</h2>
+
+      <p>둘은 <strong>있는 곳부터 다르다.</strong></p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--4"><span></span><span>프리팹</span><span>씬 인스턴스</span><span>기억할 것</span></div>
+        <div class="table__row table__row--4"><span>어디에</span><span><strong>Project 창</strong> (파일)</span><span><strong>Hierarchy</strong> (무대 위)</span><span>창고 vs 무대</span></div>
+        <div class="table__row table__row--4"><span>화면에</span><span>안 보인다</span><span>보인다</span><span>설계도는 안 보인다</span></div>
+        <div class="table__row table__row--4"><span>개수</span><span>하나</span><span>몇 개든</span><span>설계도 하나로 여러 개</span></div>
+        <div class="table__row table__row--4"><span>고치면</span><span><strong>이후 만들어지는 것이 전부 바뀐다</strong></span><span>그 하나만 바뀐다</span><span>이게 핵심</span></div>
+      </div>
+
+      <div class="card--soft"><strong>비유</strong> — 프리팹은 <strong>붕어빵 틀</strong>이고, 씬 인스턴스는 <strong>구워 나온 붕어빵</strong>이다. 틀을 고치면 이후 구워지는 붕어빵이 전부 바뀌지만, 이미 구운 붕어빵을 하나 고쳐도 틀은 그대로다.</div>
+
+      <h3><code>(Clone)</code> 이 붙는 이유</h3>
+      <p>코드로 만든 오브젝트는 이름 뒤에 <code>(Clone)</code> 이 붙는다. <code>PipePair</code> 프리팹으로 만들면 <code>PipePair(Clone)</code> 이 된다. <strong>“이건 설계도가 아니라 찍어낸 것”</strong> 이라는 표시다.</p>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">Play 중에 만든 것은 저장되지 않는다</span>
+        <span>05번에서 배운 것이 여기서 또 나온다. Unity 는 Play 를 누른 순간의 씬을 기억했다가 Stop 할 때 되돌린다. <strong>Play 중에 생긴 <code>(Clone)</code> 은 Stop 하면 전부 사라진다.</strong> 이게 정상이다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s3">
+      <div class="eyebrow">12.3</div>
+      <h2>참조 — 칸에 끌어다 넣기</h2>
+
+      <p>코드가 “어떤 프리팹을 찍어낼지” 알아야 한다. 그런데 코드에 파일 이름을 적어 넣는 방식은 쓰지 않는다. <strong>이름을 바꾸는 순간 깨지기 때문이다.</strong></p>
+
+      <p>대신 <code>public GameObject</code> 로 <strong>빈 칸</strong>을 만들어 두고, Inspector 에서 프리팹을 <strong>끌어다 넣는다.</strong> 이렇게 연결해 두는 것을 <strong>참조</strong>라고 한다.</p>
+
+      <div class="code">
+        <div class="code__bar"><span class="code__dot"></span><code class="code__name">PipeSpawner.cs</code><span class="code__path">Assets/Scripts</span></div>
+        <pre><code><span class="tok-key">public</span> <span class="tok-lit">GameObject</span> pipePrefab;   <span class="tok-cmt">// Inspector 에 "Pipe Prefab" 칸이 생긴다</span></code></pre>
+      </div>
+
+      <p>07번에서 <code>public float</code> 이 <strong>숫자 칸</strong>을 만들었던 것과 같다. <code>public GameObject</code> 는 <strong>오브젝트를 넣는 칸</strong>을 만든다.</p>
+
+      <div class="card lab">
+        <div class="label" style="margin-bottom:4px">연결이 안 되면 어떻게 되나</div>
+        <div class="ctl">
+          <button class="btn btn--go" id="linkBtn">프리팹 연결하기</button>
+          <span class="meta" id="linkNow">지금은 <strong>비어 있음</strong></span>
+        </div>
+        <div class="grid-2">
+          <div class="insp" style="border:1px solid var(--line); border-radius:var(--radius-card); overflow:hidden">
+            <div style="padding:9px 14px; background:var(--bg-subtle); border-bottom:1px solid var(--line);
+                        font-size:11.5px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-subtle)">
+              Inspector — Pipe Spawner (Script)</div>
+            <div style="display:flex; justify-content:space-between; padding:11px 14px;
+                        font-family:var(--font-code); font-size:13.5px; color:var(--text-body)">
+              <span>Pipe Prefab</span><span id="linkVal" style="color:var(--text-faint)">None (Game Object)</span></div>
+          </div>
+          <div class="code" style="align-self:start">
+            <div class="code__bar"><span class="code__dot"></span><code class="code__name">Console</code></div>
+            <pre style="min-height:64px"><code id="linkLog"><span class="tok-cmt">Play 하면 여기에 결과가 나온다</span></code></pre>
+          </div>
+        </div>
+        <p class="meta">연결을 잊으면 <code>NullReferenceException</code> 이 난다. 10번에서 <code>Rigidbody</code> 를 안 붙였을 때와 <strong>같은 에러</strong>다 — “있어야 할 게 없다”는 뜻이다.</p>
+      </div>
+    </section>
+
+    <section class="section" id="s4">
+      <div class="eyebrow">12.4</div>
+      <h2>만들어 보자</h2>
+
+      <h3>1 · 프리팹으로 저장하기</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>순서</span><span>할 일</span></div>
+        <div class="table__row table__row--2"><span>1</span><span>Project 창 <code>Assets</code> 에 <code>Prefabs</code> 폴더를 만든다 <span class="meta">(오른쪽 클릭 → Create → Folder)</span></span></div>
+        <div class="table__row table__row--2"><span>2</span><span>Hierarchy 의 <code>PipePair</code> 를 <strong>Project 창의 <code>Prefabs</code> 폴더로 끌어다 놓는다</strong></span></div>
+        <div class="table__row table__row--2"><span>3</span><span>Hierarchy 의 <code>PipePair</code> 이름이 <strong>파란색</strong>으로 바뀐다 — 프리팹과 연결됐다는 표시다</span></div>
+      </div>
+
+      <h3>2 · 씬의 원본 지우기</h3>
+      <p>Hierarchy 의 <code>PipePair</code> 를 <strong>삭제</strong>한다. 설계도는 Project 창에 남아 있으니 사라지지 않는다.</p>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">겁내지 말자</span>
+        <span>공들여 만든 걸 지우는 게 아깝게 느껴지지만, <strong>설계도가 남아 있으면 언제든 다시 만들 수 있다.</strong> 이게 프리팹의 요점이다.</span>
+      </div>
+
+      <h3>3 · 스포너 만들기</h3>
+      <p>Hierarchy 빈 곳 오른쪽 클릭 → <code>Create Empty</code> → 이름을 <strong><code>PipeSpawner</code></strong> 로. 11번에서 <code>PipePair</code> 를 만들 때와 같은 방식이다. <strong>눈에 보이는 것은 없고 일만 한다.</strong></p>
+
+      <h3>4 · 코드</h3>
+      <div class="code">
+        <div class="code__bar">
+          <span class="code__dot"></span><code class="code__name">PipeSpawner.cs</code>
+          <span class="code__path">Assets/Scripts</span><span class="code__copy">복사</span>
+        </div>
+        <pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+
+<span class="tok-key">public class</span> <span class="tok-lit">PipeSpawner</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">GameObject</span> pipePrefab;
+
+    <span class="tok-key">void</span> <span class="blank">________</span>()
+    {
+        <span class="blank">___________</span>(pipePrefab, <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">11f</span>, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>), <span class="tok-lit">Quaternion</span>.identity);
+    }
+}</code></pre>
+      </div>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>빈칸</span><span>힌트</span></div>
+        <div class="table__row table__row--2"><span>메서드 이름</span><span>지금은 <strong>한 번만</strong> 만든다. 04번의 표를 보자</span></div>
+        <div class="table__row table__row--2"><span>만드는 명령</span><span>“실체를 만들어라”. <code>Insta</code> 로 시작한다</span></div>
+      </div>
+
+      <p><code>Quaternion.identity</code> 는 <strong>“회전 없음”</strong> 이라는 뜻이다. 지금은 그냥 이렇게 쓴다고 알아두면 된다.</p>
+
+      <h3>5 · 참조 연결하기 — 잊기 쉬운 단계</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>순서</span><span>할 일</span></div>
+        <div class="table__row table__row--2"><span>1</span><span><code>PipeSpawner</code> 스크립트를 <code>PipeSpawner</code> 오브젝트에 붙인다</span></div>
+        <div class="table__row table__row--2"><span>2</span><span>Inspector 에 <strong><code>Pipe Prefab</code></strong> 칸이 생긴 것을 확인한다</span></div>
+        <div class="table__row table__row--2"><span>3</span><span>Project 창의 <code>PipePair</code> 프리팹을 <strong>그 칸으로 끌어다 놓는다</strong></span></div>
+      </div>
+
+      <details>
+        <summary>정답 확인 <span class="meta" style="margin-left:auto">스스로 채워 본 뒤에 펼치자</span></summary>
+        <div class="det">
+          <div class="code">
+            <div class="code__bar"><span class="code__dot"></span><code class="code__name">PipeSpawner.cs</code><span class="code__path">Assets/Scripts</span></div>
+            <pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+
+<span class="tok-key">public class</span> <span class="tok-lit">PipeSpawner</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">GameObject</span> pipePrefab;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        <span class="tok-fn">Instantiate</span>(pipePrefab, <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">11f</span>, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>), <span class="tok-lit">Quaternion</span>.identity);
+    }
+}</code></pre>
+          </div>
+          <div class="table">
+            <div class="table__row table__row--head table__row--2"><span>조각</span><span>뜻</span></div>
+            <div class="table__row table__row--2"><span><code>Instantiate(A, B, C)</code></span><span><strong>A</strong> 설계도로 <strong>B</strong> 위치에 <strong>C</strong> 회전으로 하나 만들어라</span></div>
+            <div class="table__row table__row--2"><span><code>Start()</code></span><span>지금은 한 번만 만든다. <strong>13번에서 여기를 <code>Update()</code> 로 옮겨</strong> 계속 나오게 한다</span></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" id="s5">
+      <div class="eyebrow">12.5</div>
+      <h2>확인한다</h2>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:8px">체크리스트</div>
+        <div class="check" data-check><span class="check__box"></span><span>Play 하면 <strong>씬에 없던 파이프</strong>가 x=11 에 생겨 흘러간다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span>Hierarchy 에 <code>PipePair(Clone)</code> 이 보인다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span><strong>Stop 하면 사라진다</strong></span></div>
+        <div class="check" data-check><span class="check__box"></span><span><strong>프리팹을 한 번 수정하면</strong> 이후 생기는 파이프가 전부 바뀐다</span></div>
+      </div>
+
+      <h3>마지막 항목은 이렇게 확인한다</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>순서</span><span>할 일</span></div>
+        <div class="table__row table__row--2"><span>1</span><span>Project 창의 <code>PipePair</code> 프리팹을 <strong>더블클릭</strong> — 프리팹 편집 화면이 열린다</span></div>
+        <div class="table__row table__row--2"><span>2</span><span><code>PipeTop</code> 의 Position y 를 <code>4</code> → <code>5</code> 로 <span class="meta">(틈이 넓어진다)</span></span></div>
+        <div class="table__row table__row--2"><span>3</span><span>왼쪽 위 <code>&lt;</code> 화살표로 씬으로 돌아온 뒤 <strong>Play</strong></span></div>
+        <div class="table__row table__row--2"><span>4</span><span>새로 생긴 파이프의 틈이 넓어졌는지 본다. <strong>확인이 끝나면 <code>4</code> 로 되돌린다</strong></span></div>
+      </div>
+
+      <div class="card--soft">이 교재를 만들면서 실제로 해봤다 — <code>PipeTop</code> 의 y 를 <code>4 → 5</code> 로 고치자 새로 생긴 클론의 틈이 <strong>3.00칸 → 4.00칸</strong> 으로 바뀌었다. <strong>씬에는 파이프가 하나도 없는데도</strong> 바뀐 값으로 나온다.</div>
+
+      <h3>문항 1 · Stop 하면 왜 사라지나</h3>
+      <p>Play 중에 생긴 <code>PipePair(Clone)</code> 이 Stop 하면 사라지는 이유는?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">A</span><span>코드가 Stop 할 때 지우기 때문</span></div>
+        <div class="choice" data-q="1" data-ok="1"><span class="choice__tag">B</span><span>Unity 가 Play 전 씬 상태로 되돌리기 때문</span></div>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">C</span><span>프리팹으로 만든 것은 원래 저장되지 않기 때문</span></div>
+      </div>
+      <div class="explain" data-explain="1" hidden><strong>05번에서 배운 것과 같다.</strong> Unity 는 Play 를 누른 순간의 씬을 기억했다가 Stop 할 때 그대로 되돌린다. Play 중에 생긴 것은 그 기억에 없으므로 사라진다. Inspector 값을 Play 중에 바꿔도 사라지는 것과 같은 이유다.</div>
+
+      <h3>문항 2 · 이미 나온 파이프는</h3>
+      <p>파이프 3개가 화면에 흘러가는 중에 프리팹의 색을 빨강으로 바꿨다. 화면의 3개는?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">A</span><span>전부 빨강이 된다</span></div>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">B</span><span>아무것도 안 바뀌고, 새로 생기는 것도 그대로다</span></div>
+        <div class="choice" data-q="2" data-ok="1"><span class="choice__tag">C</span><span>경우에 따라 다르다 — 무엇을 바꿨느냐에 달렸다</span></div>
+      </div>
+      <div class="explain" data-explain="2" hidden><strong>색은 머티리얼에 있다.</strong> 03번에서 배웠듯 머티리얼은 <strong>따로 있는 파일</strong>이고, 파이프들이 그것을 함께 쓴다. 그래서 머티리얼 색을 바꾸면 <strong>이미 나온 것까지 전부</strong> 바뀐다.<br><br>반면 프리팹의 <strong>구조</strong>(위치·크기·컴포넌트)를 바꾸면 <strong>이후에 만들어지는 것부터</strong> 적용된다. 붕어빵 틀을 고쳐도 이미 구운 붕어빵은 안 바뀌는 것과 같다.</div>
+    </section>
+
+    <section class="section" id="s6">
+      <div class="eyebrow">12.6</div>
+      <h2>막혔을 때</h2>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>증상</span><span>원인과 해결</span></div>
+        <div class="table__row table__row--2"><span><code>NullReferenceException</code></span><span><strong>가장 흔하다.</strong> <code>Pipe Prefab</code> 칸이 비어 있다. Project 창의 프리팹을 끌어다 넣자. 10번의 <code>Rigidbody</code> 를 안 붙였을 때와 같은 에러다</span></div>
+        <div class="table__row table__row--2"><span>파이프가 두 개 생긴다</span><span>씬의 <code>PipePair</code> 를 안 지웠다. 원본이 남아 있고 클론이 또 생긴 것이다</span></div>
+        <div class="table__row table__row--2"><span>Inspector 에 <code>Pipe Prefab</code> 칸이 없다</span><span><code>public</code> 을 안 붙였거나 변수가 메서드 <strong>안</strong>에 있다. 07번을 다시 보자</span></div>
+        <div class="table__row table__row--2"><span>칸에 프리팹이 안 들어간다</span><span>Hierarchy 의 오브젝트가 아니라 <strong>Project 창의 프리팹</strong>을 끌어야 한다</span></div>
+        <div class="table__row table__row--2"><span>프리팹을 고쳤는데 안 바뀐다</span><span>Play 중에 고쳤다면 Stop 할 때 되돌아간다. <strong>Stop 상태에서</strong> 고치자</span></div>
+        <div class="table__row table__row--2"><span>Stop 했더니 파이프가 없다</span><span><strong>정상이다.</strong> Play 중에 생긴 것은 저장되지 않는다</span></div>
+      </div>
+
+      <h3>13번 예고</h3>
+      <div class="card--soft">지금은 <code>Start()</code> 에서 <strong>한 번만</strong> 만든다. 계속 나오게 하려면 <code>Update()</code> 로 옮겨야 하는데, 그냥 옮기면 <strong>매 프레임 하나씩 = 1초에 60개</strong>가 쏟아진다. <strong>13번에서 “몇 초마다 한 번”을 만드는 법을 배운다.</strong> 07번의 <code>Time.deltaTime</code> 이 이번엔 곱하는 게 아니라 <strong>더하는</strong> 데 쓰인다.</div>
+    </section>
+
+    <section class="section">
+      <div class="navpair">
+        <a href="#"><div class="l">이전</div><div class="t">11 · 파이프 한 쌍이 흘러온다</div></a>
+        <a href="#"><div class="l">다음</div><div class="t">13 · 파이프가 몇 초마다 계속 나온다</div></a>
+      </div>
+    </section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">12.1 손으로 100개를 만들 수는 없다</a>
+    <a class="railitem" href="#s2">12.2 설계도와 실물</a>
+    <a class="railitem" href="#s3">12.3 참조 — 칸에 끌어다 넣기</a>
+    <a class="railitem" href="#s4">12.4 만들어 보자</a>
+    <a class="railitem" href="#s5">12.5 확인한다</a>
+    <a class="railitem" href="#s6">12.6 막혔을 때</a>
+  </aside>
+</div>
+
+<script src="_chapter.js"></script>
+<script>
+(function(){
+  "use strict";
+  var linked = false;
+  var btn = document.getElementById('linkBtn');
+  var now = document.getElementById('linkNow');
+  var val = document.getElementById('linkVal');
+  var log = document.getElementById('linkLog');
+  function render(){
+    if(linked){
+      val.textContent = 'PipePair'; val.style.color = 'var(--text)';
+      now.innerHTML = '지금은 <strong>연결됨</strong>';
+      btn.textContent = '연결 끊기';
+      log.innerHTML = '<span class="tok-fn">PipePair(Clone)</span> 생성됨  <span class="tok-cmt">// 정상</span>';
+    } else {
+      val.textContent = 'None (Game Object)'; val.style.color = 'var(--text-faint)';
+      now.innerHTML = '지금은 <strong>비어 있음</strong>';
+      btn.textContent = '프리팹 연결하기';
+      log.innerHTML = '<span class="tok-str">NullReferenceException</span>: Object reference not set\n'
+                    + '  <span class="tok-cmt">at PipeSpawner.Start ()</span>';
+    }
+  }
+  btn.addEventListener('click', function(){ linked = !linked; render(); });
+  render();
+})();
+</script>
