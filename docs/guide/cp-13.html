@@ -1,0 +1,363 @@
+<title>몇 초마다 계속 나온다</title>
+<link rel="stylesheet" href="../../textbook.css">
+<link rel="stylesheet" href="_chapter.css">
+
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>3부 · 장애물을 만든다</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">13</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <input class="search" type="search" placeholder="검색" aria-label="교재 검색">
+      <div class="navpart label">2부 · 새를 띄운다</div>
+      <a class="toc__item" href="#"><span class="toc__num">07</span>어느 PC에서나 같게</a>
+      <a class="toc__item" href="#"><span class="toc__num">10</span>낙하를 물리로 넘긴다</a>
+
+      <div class="navpart label">3부 · 장애물을 만든다</div>
+      <a class="toc__item" href="#"><span class="toc__num">11</span>파이프가 흘러온다</a>
+      <a class="toc__item" href="#"><span class="toc__num">12</span>프리팹으로 복제한다</a>
+      <div class="toc__current">
+        <div>13 · 파이프가 몇 초마다 계속 나온다</div>
+        <a class="toc__sub" href="#s1">13.1 Update 로 옮기면 60개가 쏟아진다</a>
+        <a class="toc__sub" href="#s2">13.2 시간을 재는 법</a>
+        <a class="toc__sub" href="#s3">13.3 간격 × 속도 = 거리</a>
+        <a class="toc__sub" href="#s4">13.4 코드를 고친다</a>
+        <a class="toc__sub" href="#s5">13.5 확인한다</a>
+        <a class="toc__sub" href="#s6">13.6 막혔을 때</a>
+      </div>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">14</span>지나간 파이프를 치운다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">15</span>높이가 매번 달라진다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">16</span>시작부터 깔려 있다</a>
+      <a class="toc__item" href="#"><span class="toc__num toc__num--todo">17</span>짠 순서대로 내보낸다</a>
+
+      <div class="navfoot">
+        <div class="meta num">3부 진도 · 3 / 7</div>
+        <div class="progress"><div class="progress__bar" style="width:42.9%"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+
+    <section class="section">
+      <div class="eyebrow">Chapter 13</div>
+      <h1>파이프가 몇 초마다<br>계속 나온다</h1>
+      <p class="lead">12번에서는 <code>Start()</code> 에서 한 번만 만들었다. 계속 나오게 하려면 <code>Update()</code> 로 옮겨야 하는데, 그냥 옮기면 <strong>1초에 60개</strong>가 쏟아진다. “몇 초마다 한 번”을 만드는 법을 배운다.</p>
+      <div class="meta num">읽는 시간 약 30분 · 실습 2 · 문항 2</div>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:12px">학습 목표</div>
+        <ul class="goals">
+          <li><span class="n">1</span><span>변수에 시간을 <strong>쌓아서</strong> “몇 초마다 한 번”을 만들 수 있다.</span></li>
+          <li><span class="n">2</span><span>쌓은 값을 <strong>되돌리는(리셋)</strong> 이유를 설명할 수 있다.</span></li>
+          <li><span class="n">3</span><span><strong>간격 × 속도 = 파이프 사이 거리</strong> 를 자기 말로 설명할 수 있다.</span></li>
+        </ul>
+      </div>
+
+      <div class="figure">
+        <img src="../shots/cp-13/stream.png" alt="파이프가 일정한 간격으로 늘어서 흘러가는 화면">
+        <div class="figure__cap">그림 13-1 · 파이프가 6칸 간격으로 줄지어 흘러간다</div>
+        <div class="figure__note">2초마다 한 개씩 나오고, 속도가 초당 3칸이므로 사이가 6칸으로 벌어진다.</div>
+      </div>
+    </section>
+
+    <section class="section" id="s1">
+      <div class="eyebrow">13.1</div>
+      <h2><code>Update</code> 로 옮기면 60개가 쏟아진다</h2>
+
+      <p>가장 먼저 떠오르는 방법은 <code>Start()</code> 를 <code>Update()</code> 로 바꾸는 것이다. 하지만 04번에서 배운 것을 떠올려 보자.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>메서드</span><span>몇 번 실행되나</span></div>
+        <div class="table__row table__row--2"><span><code>Start()</code></span><span>Play 직후 <strong>딱 1번</strong> → 파이프 1개</span></div>
+        <div class="table__row table__row--2"><span><code>Update()</code></span><span><strong>매 프레임</strong> → 1초에 60개, 10초면 600개</span></div>
+      </div>
+
+      <p>필요한 건 그 사이다. <strong>“매 프레임 실행되되, 실제로 만드는 건 2초에 한 번”</strong> 이어야 한다.</p>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">해보면 좋다</span>
+        <span>정말 그렇게 되는지 <code>Start</code> 를 <code>Update</code> 로만 바꿔 Play 해 보자. 파이프가 벽처럼 쏟아진다. <strong>한 번 보고 나면 왜 시간을 재야 하는지 설명이 필요 없어진다.</strong></span>
+      </div>
+    </section>
+
+    <section class="section" id="s2">
+      <div class="eyebrow">13.2</div>
+      <h2>시간을 재는 법</h2>
+
+      <p>Unity 에는 “2초마다 실행” 같은 명령이 따로 없다. <strong>직접 시간을 쌓아서 재야 한다.</strong> 방법은 세 단계다.</p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>단계</span><span>하는 일</span></div>
+        <div class="table__row table__row--2"><span>1 · 쌓는다</span><span>매 프레임 <code>timer</code> 에 이번 프레임이 걸린 시간을 더한다</span></div>
+        <div class="table__row table__row--2"><span>2 · 넘었나 본다</span><span><code>timer</code> 가 목표(2초)를 넘었는지 <code>if</code> 로 확인한다</span></div>
+        <div class="table__row table__row--2"><span>3 · 되돌린다</span><span>넘었으면 할 일을 하고 <code>timer</code> 를 <strong>0 으로 되돌린다</strong></span></div>
+      </div>
+
+      <h3><code>Time.deltaTime</code> 이 또 나온다 — 이번엔 더한다</h3>
+
+      <p>07번에서는 <code>deltaTime</code> 을 <strong>곱했다.</strong> 이번에는 <strong>더한다.</strong></p>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>쓰임</span><span>뜻</span></div>
+        <div class="table__row table__row--2"><span><code>속도 * Time.deltaTime</code> <span class="meta">(07번)</span></span><span>“이번 프레임에 <strong>얼마나 움직일까</strong>”</span></div>
+        <div class="table__row table__row--2"><span><code>timer += Time.deltaTime</code> <span class="meta">(13번)</span></span><span>“<strong>지금까지 몇 초가 흘렀나</strong>”</span></div>
+      </div>
+
+      <p><code>deltaTime</code> 은 “이번 프레임이 걸린 시간”이다. 그걸 계속 더하면 <strong>흘러간 시간의 합</strong>이 된다. 1/60초짜리를 60번 더하면 1초다.</p>
+
+      <div class="callout callout--warn">
+        <span class="callout__label">되돌리기를 잊으면</span>
+        <span><code>timer = 0f;</code> 를 안 쓰면 <code>timer</code> 가 계속 커진 채로 남는다. 한 번 2를 넘고 나면 <strong>그 뒤로는 매 프레임 조건이 참</strong>이 되어, 결국 1초에 60개가 쏟아진다. <code>Update</code> 로 옮기기만 한 것과 똑같아진다.</span>
+      </div>
+
+      <h3>왜 <code>timer</code> 에는 <code>public</code> 을 안 붙이나</h3>
+      <p>09번의 <code>isDead</code> 와 같다. <strong><code>public</code> 은 “사람이 조절할 값”에만 붙인다.</strong> <code>timer</code> 는 코드가 알아서 쌓고 되돌리는 값이라 Inspector 에 보일 이유가 없다. 반면 <code>spawnInterval</code> 은 난이도를 조절하는 값이므로 <code>public</code> 이다.</p>
+    </section>
+
+    <section class="section" id="s3">
+      <div class="eyebrow">13.3</div>
+      <h2>간격 × 속도 = 거리</h2>
+
+      <p>파이프가 나오는 <strong>시간 간격</strong>을 정하면, 화면에서의 <strong>거리 간격</strong>이 따라서 정해진다. 왜 그럴까?</p>
+
+      <p>파이프는 나오자마자 왼쪽으로 흘러간다. 다음 파이프가 나올 때까지 앞 파이프는 <strong>그동안 이동한 거리</strong>만큼 가 있다.</p>
+
+      <div class="card--soft" style="font-family:var(--font-code); font-size:14px">
+        2초 기다림 × 초당 3칸 = <strong>6칸 벌어짐</strong>
+      </div>
+
+      <p>아래에서 직접 바꿔 보자. <strong>간격을 줄이면 촘촘해지고, 속도를 올리면 오히려 벌어진다.</strong></p>
+
+      <div class="card lab">
+        <div class="ctl">
+          <label for="iv">Spawn Interval</label>
+          <input type="range" id="iv" min="0.5" max="4" step="0.1" value="2">
+          <span class="out" id="ivv">2.0초</span>
+        </div>
+        <div class="ctl">
+          <label for="sp">Speed</label>
+          <input type="range" id="sp" min="1" max="6" step="0.5" value="3">
+          <span class="out" id="spv">3.0칸/초</span>
+        </div>
+
+        <div class="figure">
+          <div class="figcell">
+            <div class="figcell__h"><b>Game 뷰</b>간격과 속도에 따른 파이프 배치</div>
+            <canvas id="cv" width="400" height="230" aria-label="파이프 간격 시뮬레이션"></canvas>
+          </div>
+          <div class="figstat"><span>파이프 사이 거리 = 간격 × 속도</span><b id="dist">6.0칸</b></div>
+          <div class="figure__cap">그림 13-2 · 간격과 속도가 거리를 정한다</div>
+          <div class="figure__note">화면 가로가 17.8칸이므로, 거리가 6칸이면 화면에 3개쯤 보인다.</div>
+        </div>
+
+        <div class="table">
+          <div class="table__row table__row--head table__row--4 table__row--r"><span>간격</span><span>속도</span><span>거리</span><span>화면에 보이는 개수</span></div>
+          <div id="tbl"></div>
+        </div>
+      </div>
+
+      <div class="card--soft"><strong>이 관계가 16번에서 아주 중요해진다.</strong> 시작하자마자 파이프를 미리 깔아둘 때, 어디에 놓아야 할지를 이 식으로 계산한다.</div>
+    </section>
+
+    <section class="section" id="s4">
+      <div class="eyebrow">13.4</div>
+      <h2>코드를 고친다</h2>
+
+      <div class="code">
+        <div class="code__bar">
+          <span class="code__dot"></span><code class="code__name">PipeSpawner.cs</code>
+          <span class="code__path">Assets/Scripts</span><span class="code__copy">복사</span>
+        </div>
+        <pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+
+<span class="tok-key">public class</span> <span class="tok-lit">PipeSpawner</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">GameObject</span> pipePrefab;
+    <span class="tok-key">public float</span> spawnInterval = <span class="tok-str">2f</span>;
+
+    <span class="tok-key">float</span> timer = <span class="tok-str">0f</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        timer <span class="blank">__</span> <span class="tok-lit">Time</span>.deltaTime;
+
+        <span class="tok-key">if</span> (timer <span class="blank">__</span> spawnInterval)
+        {
+            <span class="tok-fn">Instantiate</span>(pipePrefab, <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">11f</span>, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>), <span class="tok-lit">Quaternion</span>.identity);
+            <span class="blank">_______________</span>
+        }
+    }
+}</code></pre>
+      </div>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>빈칸</span><span>힌트</span></div>
+        <div class="table__row table__row--2"><span><code>timer</code> 뒤</span><span>원래 값에 더해서 다시 넣는다. 06번에서 배웠다</span></div>
+        <div class="table__row table__row--2"><span><code>if</code> 안</span><span>“목표를 넘었거나 같으면”. 09번의 비교 연산자</span></div>
+        <div class="table__row table__row--2"><span>만든 다음 줄</span><span><strong>쌓아둔 시간을 되돌린다.</strong> 이걸 빼먹으면 파이프가 쏟아진다</span></div>
+      </div>
+
+      <details>
+        <summary>정답 확인 <span class="meta" style="margin-left:auto">스스로 채워 본 뒤에 펼치자</span></summary>
+        <div class="det">
+          <div class="code">
+            <div class="code__bar"><span class="code__dot"></span><code class="code__name">PipeSpawner.cs</code><span class="code__path">Assets/Scripts</span></div>
+            <pre><code>    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        timer += <span class="tok-lit">Time</span>.deltaTime;
+
+        <span class="tok-key">if</span> (timer &gt;= spawnInterval)
+        {
+            <span class="tok-fn">Instantiate</span>(pipePrefab, <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">11f</span>, <span class="tok-str">0f</span>, <span class="tok-str">0f</span>), <span class="tok-lit">Quaternion</span>.identity);
+            timer = <span class="tok-str">0f</span>;
+        }
+    }</code></pre>
+          </div>
+          <div class="table">
+            <div class="table__row table__row--head table__row--2"><span>줄</span><span>하는 일</span></div>
+            <div class="table__row table__row--2"><span><code>timer += Time.deltaTime;</code></span><span>매 프레임 흘러간 시간을 쌓는다</span></div>
+            <div class="table__row table__row--2"><span><code>if (timer &gt;= spawnInterval)</code></span><span>2초가 찼는지 본다</span></div>
+            <div class="table__row table__row--2"><span><code>timer = 0f;</code></span><span><strong>다시 0부터 센다.</strong> 이 줄이 없으면 그 뒤로 매 프레임 참이 된다</span></div>
+          </div>
+          <div class="callout callout--tip">
+            <span class="callout__label">이 모양을 기억해 두자</span>
+            <span><strong>쌓는다 → 넘었나 본다 → 되돌린다.</strong> 게임에서 “몇 초마다 무엇”은 거의 전부 이 세 줄이다. 적이 나오는 것도, 총알 발사 간격도, 체력이 차오르는 것도 같은 모양이다.</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" id="s5">
+      <div class="eyebrow">13.5</div>
+      <h2>확인한다</h2>
+
+      <div class="card">
+        <div class="label" style="margin-bottom:8px">체크리스트</div>
+        <div class="check" data-check><span class="check__box"></span><span>파이프가 <strong>눈으로 세어 2초 간격</strong>으로 나온다</span></div>
+        <div class="check" data-check><span class="check__box"></span><span>파이프 사이 거리가 <strong>일정하다</strong></span></div>
+        <div class="check" data-check><span class="check__box"></span><span>Inspector 에서 <code>Spawn Interval</code> 을 <strong>1 로 바꾸면 촘촘해진다</strong></span></div>
+      </div>
+
+      <h3>이 교재를 만들면서 실제로 잰 값</h3>
+      <div class="table">
+        <div class="table__row table__row--head table__row--4 table__row--r"><span>Interval</span><span>실측 간격</span><span>파이프 사이 거리</span><span>간격 × 속도</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>2</span><span>2.002 ~ 2.012초</span><span>6.004 ~ 6.036</span><span>2 × 3 = 6</span></div>
+        <div class="table__row table__row--4 table__row--r num"><span>1</span><span>1.002 ~ 1.009초</span><span>3.005 ~ 3.027</span><span>1 × 3 = 3</span></div>
+      </div>
+      <p class="meta">두 조건 모두에서 <strong>거리가 “간격 × 속도”와 소수 둘째 자리까지 맞는다.</strong> 우연이 아니라 그렇게 되도록 만들어진 것이다.</p>
+
+      <h3>문항 1 · 되돌리기를 빼먹으면</h3>
+      <p><code>timer = 0f;</code> 를 안 쓰면 어떻게 되나?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">A</span><span>파이프가 한 개만 나오고 만다</span></div>
+        <div class="choice" data-q="1" data-ok="1"><span class="choice__tag">B</span><span>2초 뒤부터 매 프레임 쏟아진다</span></div>
+        <div class="choice" data-q="1" data-ok="0"><span class="choice__tag">C</span><span>2초마다 두 개씩 나온다</span></div>
+      </div>
+      <div class="explain" data-explain="1" hidden><code>timer</code> 는 계속 커지기만 한다. 2를 넘는 순간부터 <strong>조건이 영원히 참</strong>이 되어 매 프레임 하나씩 만든다. 1초에 60개다. <strong><code>Update</code> 로 옮기기만 한 것과 똑같아진다.</strong></div>
+
+      <h3>문항 2 · 속도를 올리면</h3>
+      <p>간격은 2초 그대로 두고 파이프 <code>Speed</code> 만 3 → 6 으로 올리면 파이프 사이 거리는?</p>
+      <div class="answers" data-quiz>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">A</span><span>절반인 3칸으로 좁아진다</span></div>
+        <div class="choice" data-q="2" data-ok="1"><span class="choice__tag">B</span><span>두 배인 12칸으로 벌어진다</span></div>
+        <div class="choice" data-q="2" data-ok="0"><span class="choice__tag">C</span><span>6칸 그대로다</span></div>
+      </div>
+      <div class="explain" data-explain="2" hidden><strong>간격 × 속도 = 거리</strong> 이므로 <code>2 × 6 = 12</code> 칸이다. 빨라지면 같은 2초 동안 더 멀리 가기 때문이다. 화면 가로가 17.8칸이니 화면에 <strong>2개도 안 보이게</strong> 된다. 위 실험에서 슬라이더를 움직여 확인해 보자.</div>
+
+      <div class="callout callout--tip">
+        <span class="callout__label">말로 설명해 보기</span>
+        <span><strong>“간격 × 속도 = 파이프 사이 거리”</strong> 를 자기 말로 설명할 수 있으면 통과다. 16번에서 이 식으로 계산을 한다.</span>
+      </div>
+    </section>
+
+    <section class="section" id="s6">
+      <div class="eyebrow">13.6</div>
+      <h2>막혔을 때</h2>
+
+      <div class="table">
+        <div class="table__row table__row--head table__row--2"><span>증상</span><span>원인과 해결</span></div>
+        <div class="table__row table__row--2"><span>파이프가 벽처럼 쏟아진다</span><span><code>timer = 0f;</code> 를 빼먹었다. 또는 <code>Start</code> 를 <code>Update</code> 로 바꾸기만 했다</span></div>
+        <div class="table__row table__row--2"><span>한 개만 나오고 만다</span><span>아직 <code>Start()</code> 에 있다. <code>Update()</code> 로 옮기자</span></div>
+        <div class="table__row table__row--2"><span>간격이 들쭉날쭉하다</span><span><code>Time.deltaTime</code> 대신 다른 값을 더했을 수 있다. <code>timer++</code> 는 프레임 수를 세는 것이지 시간이 아니다</span></div>
+        <div class="table__row table__row--2"><span>Inspector 에 <code>Timer</code> 칸이 보인다</span><span><code>timer</code> 에 <code>public</code> 을 붙였다. 코드가 관리하는 값이므로 떼자</span></div>
+        <div class="table__row table__row--2"><span>Interval 을 바꿨는데 안 바뀐다</span><span>Play 중에 바꿨다면 Stop 할 때 되돌아간다. <strong>확인이 끝나면 2 로 되돌리자</strong> — 16번이 이 값에 기댄다</span></div>
+        <div class="table__row table__row--2"><span>시간이 지날수록 느려진다</span><span>파이프가 계속 쌓여서다. <strong>14번에서 해결한다</strong></span></div>
+      </div>
+
+      <h3>14번 예고</h3>
+      <div class="card--soft">이제 파이프가 계속 나온다. 그런데 <strong>화면 밖으로 나간 파이프가 사라지지 않고 계속 쌓인다.</strong> 3분만 플레이해도 90개가 된다. 눈에는 안 보이지만 컴퓨터는 그것들을 계속 움직이고 있다. <strong>14번에서 치우는 법을 배운다.</strong></div>
+    </section>
+
+    <section class="section">
+      <div class="navpair">
+        <a href="#"><div class="l">이전</div><div class="t">12 · 파이프를 설계도로 만들어 복제한다</div></a>
+        <a href="#"><div class="l">다음</div><div class="t">14 · 지나간 파이프를 치운다</div></a>
+      </div>
+    </section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">13.1 Update 로 옮기면 60개가 쏟아진다</a>
+    <a class="railitem" href="#s2">13.2 시간을 재는 법</a>
+    <a class="railitem" href="#s3">13.3 간격 × 속도 = 거리</a>
+    <a class="railitem" href="#s4">13.4 코드를 고친다</a>
+    <a class="railitem" href="#s5">13.5 확인한다</a>
+    <a class="railitem" href="#s6">13.6 막혔을 때</a>
+  </aside>
+</div>
+
+<script src="_chapter.js"></script>
+<script>
+(function(){
+  "use strict";
+  var TOP = 5, BOT = -5, HALF_W = 8.889;
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var iv = document.getElementById('iv'), sp = document.getElementById('sp');
+
+  function render(){
+    var interval = +iv.value, speed = +sp.value, d = interval * speed;
+    document.getElementById('ivv').textContent = interval.toFixed(1) + '초';
+    document.getElementById('spv').textContent = speed.toFixed(1) + '칸/초';
+    document.getElementById('dist').textContent = d.toFixed(1) + '칸';
+
+    var W = cv.width, H = cv.height;
+    var toX = function(wx){ return (wx + HALF_W) / (HALF_W * 2) * W; };
+    var toY = function(wy){ return (TOP - wy) / (TOP - BOT) * H; };
+    var u = H / (TOP - BOT);
+
+    ctx.fillStyle = '#87ceeb'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#4c9a2a'; ctx.fillRect(0, toY(-4), W, H - toY(-4));
+
+    ctx.fillStyle = '#2e7d32';
+    var shown = 0;
+    for(var x = 7; x > -HALF_W - d; x -= d){
+      if(x > -HALF_W - 1) shown++;
+      ctx.fillRect(toX(x) - u * 0.75, toY(6.5), u * 1.5, u * 5);
+      ctx.fillRect(toX(x) - u * 0.75, toY(-1.5), u * 1.5, u * 5);
+    }
+    ctx.fillStyle = '#ffc800';
+    ctx.fillRect(toX(-3) - u / 2, toY(0) - u / 2, u, u);
+
+    var rows = [[2,3],[1,3],[2,6],[4,3]].map(function(p){
+      var dd = p[0]*p[1], n = Math.floor(HALF_W*2/dd);
+      var hit = (Math.abs(p[0]-interval)<0.06 && Math.abs(p[1]-speed)<0.26)
+              ? ' style="background:var(--accent-bg-2)"' : '';
+      return '<div class="table__row table__row--4 table__row--r num"'+hit+'><span>'+p[0].toFixed(1)+'초</span><span>'
+           + p[1].toFixed(1)+'</span><span>'+dd.toFixed(1)+'칸</span><span>'+n+'개</span></div>';
+    }).join('');
+    document.getElementById('tbl').innerHTML = rows;
+  }
+  iv.addEventListener('input', render);
+  sp.addEventListener('input', render);
+  render();
+})();
+</script>

@@ -679,6 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PipeSpawner
   pipePrefab: {fileID: 942297874080090845, guid: 92036f0d747678443bdc9a257287a0b8, type: 3}
+  spawnInterval: 2
 --- !u!4 &771825942
 Transform:
   m_ObjectHideFlags: 0
