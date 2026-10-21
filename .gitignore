@@ -43,3 +43,14 @@ Thumbs.db
 /.claude/skills/
 /.mcp.json
 /.mcp.json.cloud.bak
+
+# 학생 배포용 zip (빌더가 다시 만든다)
+/dist/튜터-설치.zip
+/dist/교재-잠금*.html
+
+# 발행 설정 — 교재 비밀번호(DPAPI 암호화)와 저작권 문구. 이 PC 에서만 풀린다.
+# 커밋에 절대 섞이면 안 된다.
+/.book-release.json
+
+# 도구 실행 부산물
+/tools/__pycache__/
