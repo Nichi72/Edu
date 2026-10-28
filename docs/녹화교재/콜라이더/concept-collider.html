@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개념 · 충돌 정리 — Collider 를 더 알고 싶으면 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>콜라이더와 충돌 — 게임오버와 스코어</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">개념 정리</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">개념 · 충돌 정리 — Collider 를 더 알고 싶으면</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <a class="toc__item" href="ch04.html"><span class="toc__num">04</span>게임오버 조건 — 땅과 파이프에 닿으면</a><a class="toc__item" href="ch05.html"><span class="toc__num">05</span>스코어 — 파이프의 사이를 지나면</a><div class="navpart label">개념 정리</div><div class="toc__current"><div>충돌 정리 — Collider 를 더 알고 싶으면</div><a class="toc__sub" href="#s1">1 Collider 의 모양</a><a class="toc__sub" href="#s2">2 Enter · Stay · Exit</a><a class="toc__sub" href="#s3">3 부딪힘을 알려면</a><a class="toc__sub" href="#s4">4 무엇과 부딪혔는지 알기</a><a class="toc__sub" href="#s5">5 레이어로 아예 안 부딪히게</a><a class="toc__sub" href="#s6">6 Physics Material — 미끄러짐과 튕김</a></div>
+        <div class="navfoot"><div class="meta num">챕터 · 2</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">개념 정리</div>
+      <h1>충돌 정리 — Collider 를 더 알고 싶으면</h1>
+      <p class="lead">04 · 05 에서 Collider 로 게임 오버와 점수를 만들었다. 여기서는 그때 「이런 게 있다」 로 넘어간 것들을 본다. <mark class="key">04 · 05 를 끝내는 데 꼭 필요하지는 않다.</mark> 다른 게임을 만들 때 다시 펼쳐 본다.</p>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">1</div><h2>Collider 의 모양</h2>
+<div class="table"><div class="table__row table__row--4 table__row--head"><span>컴포넌트</span><span>모양</span><span>크기를 정하는 칸</span><span>주로</span></div><div class="table__row table__row--4"><span>Box Collider</span><span>상자</span><span>Size (x · y · z)</span><span>벽 · 바닥 · 상자</span></div><div class="table__row table__row--4"><span>Sphere Collider</span><span>공</span><span>Radius (반지름)</span><span>공 · 동그란 물체</span></div><div class="table__row table__row--4"><span>Capsule Collider</span><span>캡슐</span><span>Radius (두께) · Height (길이) · Direction (길어지는 축)</span><span>사람 캐릭터</span></div><div class="table__row table__row--4"><span>Mesh Collider</span><span>모델 모양 그대로</span><span>—</span><span>꼭 필요할 때만</span></div></div>
+<ul><li><strong>Center</strong> — 범위의 중심을 옮긴다. 모델은 그대로 두고 초록 선만 움직인다</li><li><strong>Edit Collider</strong> 버튼 — 누르면 Scene 뷰의 초록 선에 점이 생긴다. 끌어서 크기를 바꾼다</li><li><mark class="key">Mesh Collider 는 정확하지만 무겁다.</mark> 보통은 Box · Sphere · Capsule 을 하나 또는 여러 개 붙여 비슷하게 맞춘다</li><li>2D 게임은 이름에 2D 가 붙은 것을 쓴다. Box Collider 2D, Circle Collider 2D. <mark class="key">3D 와 2D 는 서로 부딪히지 않는다.</mark></li></ul>
+<p>씬 전체의 Collider 를 한 번에 보려면 <strong>Window &gt; Analysis &gt; Physics Debugger.</strong> Collider 가 있는 곳이 모두 칠해진다.</p>
+</section>
+<section class="section" id="s2"><div class="eyebrow">2</div><h2>Enter · Stay · Exit</h2>
+<p>04 · 05 에서는 Enter 만 썼다. 함수는 모두 여섯 개다.</p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span></span><span>벽 (Is Trigger 끔)</span><span>결승선 (Is Trigger 켬)</span></div><div class="table__row table__row--3"><span>닿는 순간 한 번</span><span><code>OnCollisionEnter(Collision collision)</code></span><span><code>OnTriggerEnter(Collider other)</code></span></div><div class="table__row table__row--3"><span>닿아 있는 동안 계속</span><span><code>OnCollisionStay(Collision collision)</code></span><span><code>OnTriggerStay(Collider other)</code></span></div><div class="table__row table__row--3"><span>떨어지는 순간 한 번</span><span><code>OnCollisionExit(Collision collision)</code></span><span><code>OnTriggerExit(Collider other)</code></span></div></div>
+<p><mark class="key">처음엔 여섯 개에 <code>Debug.Log</code> 를 하나씩 넣고 Play 해 보면 언제 불리는지 바로 보인다.</mark></p>
+<p><strong>Stay 가 안 찍힐 때</strong> — 물체가 완전히 멈추면 Rigidbody 가 「잠든다」. 잠든 동안은 닿아 있어도 Stay 가 불리지 않는다. 다시 움직이면 깨어난다.</p>
+<p>Enter 와 Exit 를 짝으로 쓰는 예 — 물웅덩이 Trigger 에 들어가면(Enter) 느려지고, 나오면(Exit) 원래 속도로.</p>
+</section>
+<section class="section" id="s3"><div class="eyebrow">3</div><h2>부딪힘을 알려면</h2>
+<p><mark class="key">둘 다 Collider 가 있고, 둘 중 하나에는 Rigidbody 가 있어야 한다.</mark></p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>새</span><span>상대</span><span>알 수 있나</span></div><div class="table__row table__row--3"><span>Collider + Rigidbody</span><span>Collider</span><span>안다 — 04 의 새와 파이프</span></div><div class="table__row table__row--3"><span>Collider</span><span>Collider</span><span>모른다. 둘 다 Rigidbody 가 없다</span></div><div class="table__row table__row--3"><span>Rigidbody 만</span><span>Collider</span><span>모른다. 새가 그냥 뚫고 지나간다</span></div></div>
+<p>Rigidbody 는 움직이는 쪽에 붙인다. 함수는 부딪힌 <strong>두 쪽 어디에</strong> 써도 불린다. 04 에서는 새에 썼지만 파이프 쪽 스크립트에 써도 된다.</p>
+<p>둘 다 Rigidbody 가 있으면 서로 민다. 새가 상자를 밀고 가는 게임이라면 상자에도 Rigidbody 를 붙인다.</p>
+</section>
+<section class="section" id="s4"><div class="eyebrow">4</div><h2>무엇과 부딪혔는지 알기</h2>
+<p>04 에서는 땅이든 파이프든 똑같이 게임 오버였다. 그래서 상대를 볼 필요가 없었다. <mark class="key">상대에 따라 다른 일을 해야 하면 괄호 안을 쓴다.</mark></p>
+<div class="table"><div class="table__row table__row--2 table__row--head"><span>쓰는 것</span><span>뜻</span></div><div class="table__row table__row--2"><span><code>collision.gameObject</code> / <code>other.gameObject</code></span><span>부딪힌 상대 오브젝트</span></div><div class="table__row table__row--2"><span><code>.name</code></span><span>상대의 이름</span></div><div class="table__row table__row--2"><span><code>.CompareTag("Ground")</code></span><span>상대의 Tag 가 Ground 인가 (bool)</span></div><div class="table__row table__row--2"><span><code>.GetComponent&lt;Rigidbody&gt;()</code></span><span>상대에게 붙은 컴포넌트. 03 의 GetComponent 에 「누구의」 가 붙었다</span></div></div>
+<p><strong>Tag</strong> 는 오브젝트에 붙이는 이름표다. Inspector 맨 위 <strong>Tag</strong> → <strong>Add Tag...</strong> → <code>+</code> 로 만들고, 오브젝트를 골라 지정한다.</p>
+<p>예: 땅에 떨어졌을 때만 다른 말을 찍는다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">void</span> <span class="tok-fn">OnCollisionEnter</span>(<span class="tok-lit">Collision</span> collision)
+    {
+        <span class="tok-key">if</span>(collision.gameObject.<span class="tok-fn">CompareTag</span>(<span class="tok-str">"Ground"</span>))
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"땅에 떨어졌다"</span>);
+        }
+
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"게임 오버"</span>);
+        <span class="tok-lit">Time</span>.timeScale = <span class="tok-str">0</span>;
+    }</code></pre></div>
+<p><mark class="key">Tag 이름도 철자 · 대소문자까지 같아야 한다.</mark> <code>CompareTag</code> 는 만들지 않은 Tag 이름을 넣으면 Console 에 에러로 알려 준다.</p>
+</section>
+<section class="section" id="s5"><div class="eyebrow">5</div><h2>레이어로 아예 안 부딪히게</h2>
+<p>총알끼리 부딪히면 안 되는 게임을 생각해 보자. 코드에 「총알이면 무시」 를 쓸 수 있다. 그런데 무시할 짝이 늘어날수록 하나씩 빠뜨린다. 적이 회복 아이템을 먹어 버리는 식의 버그가 난다.</p>
+<p><mark class="key">레이어로 묶고, 레이어끼리 부딪힐지를 한 표에서 정한다.</mark></p>
+<ol><li>Inspector 맨 위 <strong>Layer</strong> → <strong>Add Layer...</strong> → 빈 칸에 이름 (예: <code>Bullet</code>)</li><li>오브젝트를 골라 Layer 를 <code>Bullet</code> 으로</li><li><strong>Edit &gt; Project Settings &gt; Physics</strong> → <strong>Layer Collision Matrix</strong></li><li><code>Bullet</code> 줄과 <code>Bullet</code> 칸이 만나는 체크를 끈다</li></ol>
+<p>체크를 끄면 그 두 레이어는 <mark class="key">아예 부딪히지 않는다. 함수도 불리지 않는다.</mark> 코드는 한 줄도 안 바뀐다.</p>
+<p>레이어 칸 수는 정해져 있고, 앞쪽 몇 칸은 Unity 가 쓴다. 필요할 때만 만든다.</p>
+</section>
+<section class="section" id="s6"><div class="eyebrow">6</div><h2>Physics Material — 미끄러짐과 튕김</h2>
+<p>부딪혔을 때 얼마나 미끄러지고 얼마나 튈지를 정한다. Project 창 오른쪽 클릭 → <strong>Create &gt; Physics Material</strong> 로 만들고, Collider 의 <strong>Material</strong> 칸에 넣는다.</p>
+<div class="table"><div class="table__row table__row--4 table__row--head"><span>칸</span><span>뜻</span><span>0 이면</span><span>1 이면</span></div><div class="table__row table__row--4"><span>Dynamic Friction</span><span>움직이는 중의 마찰</span><span>얼음처럼 미끄러진다</span><span>금방 멈춘다</span></div><div class="table__row table__row--4"><span>Static Friction</span><span>멈춰 있을 때의 마찰</span><span>살짝 밀어도 미끄러진다</span><span>잘 안 밀린다</span></div><div class="table__row table__row--4"><span>Bounciness</span><span>튕기는 정도</span><span>안 튄다</span><span>거의 줄지 않고 튄다</span></div></div>
+<p>두 물체의 값이 다를 때 어떻게 합칠지는 <strong>Friction Combine</strong> · <strong>Bounce Combine</strong> 이 정한다. Average(평균) · Minimum(작은 쪽) · Multiply(곱) · Maximum(큰 쪽).</p>
+<p>예: 고무공. Bounciness 0.8, Bounce Combine Maximum. 바닥 재질이 뭐든 공이 통통 튄다.</p>
+</section>
+
+    <section class="section"><div class="navpair"><a href="index.html"><div class="l">목차</div><div class="t">콜라이더와 충돌 — 게임오버와 스코어</div></a><a href="ch04.html"><div class="l">돌아가기</div><div class="t">04 · 게임오버 조건 — 땅과 파이프에 닿으면</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">1 Collider 의 모양</a><a class="railitem" href="#s2">2 Enter · Stay · Exit</a><a class="railitem" href="#s3">3 부딪힘을 알려면</a><a class="railitem" href="#s4">4 무엇과 부딪혔는지 알기</a><a class="railitem" href="#s5">5 레이어로 아예 안 부딪히게</a><a class="railitem" href="#s6">6 Physics Material — 미끄러짐과 튕김</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>

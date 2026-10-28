@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 · 플레이어 — 기본적인 이동 로직 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    
+    <span class="topbar__now">02</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">02 · 플레이어 — 기본적인 이동 로직</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <a class="toc__item" href="ch01.html"><span class="toc__num">01</span>기획서 — 만들 게임을 글로 쪼갠다</a><div class="toc__current"><div>02 · 플레이어 — 기본적인 이동 로직</div><a class="toc__sub" href="#s1">2.1 시작하기 전에</a><a class="toc__sub" href="#s2">2.2 오른쪽으로 계속 나아감</a><a class="toc__sub" href="#s3">2.3 중력으로 인해서 계속 아래로 떨어짐</a><a class="toc__sub" href="#s4">2.4 스페이스를 통해 점프</a><a class="toc__sub" href="#s5">2.5 확인하기</a><a class="toc__sub" href="#s6">2.6 안 되면</a><a class="toc__sub" href="#s7">2.7 답 — 이 시간이 끝났을 때의 코드</a></div><a class="toc__item" href="ch03.html"><span class="toc__num">03</span>플레이어 — 기본적인 이동 로직, 물리로 다시</a><div class="navpart label">개념 정리</div><a class="toc__item" href="concept-if.html"><span class="toc__num">+</span>if — 조건에 따라 할지 말지 정한다</a>
+        <div class="navfoot"><div class="meta num">챕터 · 3</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">Chapter 02</div>
+      <h1>플레이어 — 기본적인 이동 로직</h1>
+      <div class="card"><div class="label" style="margin-bottom:12px">이번 시간에 만드는 것</div><p class="meta" style="margin-bottom:8px">Play 를 누르면 이렇게 된다.</p><ul class="goals"><li><span class="n">1</span><span>새가 오른쪽으로 계속 날아간다</span></li><li><span class="n">2</span><span>날아가면서 천천히 떨어진다</span></li><li><span class="n">3</span><span>날아가는 속도와 떨어지는 속도를 코드를 열지 않고 Unity 에서 바꿀 수 있다</span></li><li><span class="n">4</span><span>스페이스를 누르면 새가 반응한다. 다만 점프는 아직 어색하다</span></li></ul></div>
+<p><strong>이번에 배우는 말</strong> — <a href="#s2">단위 벡터</a> · <a href="#s2">하드코딩</a> · <a href="#s2">가독성</a> · <a href="#s3">public</a> · <a href="#s4">Keyboard</a> · <a href="#s4">if</a></p>
+<p>이번에 정해지는 이름이다. <mark class="key">철자와 대소문자까지 이대로 쓴다.</mark></p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>이름</span><span>무엇</span><span>값</span></div><div class="table__row table__row--3"><span><code>speed</code></span><span>오른쪽으로 가는 속도</span><span>5</span></div><div class="table__row table__row--3"><span><code>gravitySpeed</code></span><span>아래로 떨어지는 속도</span><span>코드 5, Inspector 1.5</span></div><div class="table__row table__row--3"><span><code>jumpPower</code></span><span>점프할 때 올라가는 양</span><span>5</span></div></div>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">2.1</div><h2>시작하기 전에</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>01 을 끝냈다. <code>BirdMove.cs</code> 맨 위에 플레이어 기획이 주석으로 있다</span></div><div class="check" data-check><span class="check__box"></span><span><code>transform.Translate</code> 로 물체를 움직여 본 적이 있다</span></div><div class="check" data-check><span class="check__box"></span><span><code>Time.deltaTime</code> 을 곱하면 컴퓨터마다 프레임이 달라도 같은 속도가 된다는 것을 들었다</span></div></div>
+</section>
+<section class="section" id="s2"><div class="eyebrow">2.2</div><h2>오른쪽으로 계속 나아감</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직</div><ol class="spec__list"><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">Play 하면 새가 오른쪽으로 계속 날아가게 만든다.</mark> 지금은 가만히 있다.</p>
+<p>이걸 하려면 세 가지가 필요하다. 모두 지난 시간에 본 것이다.</p>
+<ul><li><strong>계속</strong> 일어나는 일이다 → 매 프레임 도는 <code>Update</code> 에 쓴다</li><li>물체를 조금씩 옮긴다 → <code>transform.Translate</code></li><li>방향은 <strong>오른쪽</strong> → <code>Vector3.right</code></li></ul>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * <span class="tok-str">5</span> * <span class="tok-lit">Time</span>.deltaTime);
+    }</code></pre></div>
+<p><span class="play">▶ Play</span> 새가 오른쪽으로 간다.</p>
+<div class="callout callout--tip"><span class="callout__label">단위 벡터</span><span><code>Vector3.right</code> 는 길이가 1 인 오른쪽, (1, 0, 0) 이다. <mark class="key">방향만 알려 준다. 얼마나 갈지는 곱해서 정한다.</mark> <code>* 5</code> 면 1초에 5칸.</span></div>
+<p>이 <code>5</code> 는 무슨 숫자일까? 방금 쳤으니 지금은 안다. <strong>석 달 뒤의 나는 모른다.</strong></p>
+<div class="callout callout--tip"><span class="callout__label">하드코딩</span><span><mark class="key">숫자를 코드에 그대로 박아 넣는 것.</mark> 코드가 읽히는 정도를 <strong>가독성</strong> 이라고 한다. 하드코딩을 하면 가독성이 떨어진다.</span></div>
+<p>그래서 숫자에 이름을 붙인다. <mark class="key"><code>speed</code> 에 5 를 넣고, <code>5</code> 자리에 <code>speed</code> 를 쓴다.</mark></p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod"><span class="tok-key">float</span> speed;</span>
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+<span class="chg-line chg-line--mod">    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * <mark class="chg-del"><span class="tok-str">5</span></mark> * <span class="tok-lit">Time</span>.deltaTime);</span>
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod"><span class="tok-key">float</span> speed<mark class="chg-add"> = <span class="tok-str">5</span></mark>;</span>
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+<span class="chg-line chg-line--mod">    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * <mark class="chg-add">speed</mark> * <span class="tok-lit">Time</span>.deltaTime);</span>
+}</code></pre></div></div>
+<p><span class="play">▶ Play</span> 아까와 똑같이 간다. 움직임은 그대로, 코드만 「오른쪽 × 속도 × 시간」 으로 읽힌다.</p>
+<p>마지막으로 기획 첫 줄에 <code>1.</code> 을 붙이고, 그 줄을 복사해 코드 바로 위에 붙인다. <mark class="key">기획 한 줄 아래에 그 코드.</mark> 앞으로 계속 이렇게 짝을 맞춘다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code>transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * speed * <span class="tok-lit">Time</span>.deltaTime);</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--add"><span class="tok-cmt">// 1. 오른쪽으로 계속 나아감.</span></span>
+transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * speed * <span class="tok-lit">Time</span>.deltaTime);</code></pre></div></div>
+</section>
+<section class="section" id="s3"><div class="eyebrow">2.3</div><h2>중력으로 인해서 계속 아래로 떨어짐</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직</div><ol class="spec__list"><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">Play 하면 새가 오른쪽으로 날아가면서 아래로도 떨어지게 만든다.</mark></p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>오른쪽으로 가는 줄은 이미 있다. 떨어지는 줄은 그 줄과 무엇만 다르면 될까?</span></div>
+<p>두 가지가 다르다.</p>
+<ul><li>방향이 <strong>아래</strong> → <code>Vector3.down</code></li><li>빠르기가 다르다 → 변수를 하나 더, <code>gravitySpeed</code></li></ul>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">float</span> speed = <span class="tok-str">5</span>;
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+    <span class="tok-cmt">// 1. 오른쪽으로 계속 나아감.</span>
+    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * speed * <span class="tok-lit">Time</span>.deltaTime);
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">float</span> speed = <span class="tok-str">5</span>;
+<span class="chg-line chg-line--add"><span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;</span>
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+    <span class="tok-cmt">// 1. 오른쪽으로 계속 나아감.</span>
+    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * speed * <span class="tok-lit">Time</span>.deltaTime);
+<span class="chg-line chg-line--add"> </span>
+<span class="chg-line chg-line--add">    <span class="tok-cmt">// 2. 중력으로 인해서 계속 아래로 떨어짐</span></span>
+<span class="chg-line chg-line--add">    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.down * gravitySpeed * <span class="tok-lit">Time</span>.deltaTime);</span>
+}</code></pre></div></div>
+<p><code>gravitySpeed</code> — 소문자로 시작, 둘째 단어부터 대문자. 01 의 이름 규칙이다.</p>
+<p><span class="play">▶ Play</span> 오른쪽으로 가면서 떨어진다. 그런데 <mark class="key">너무 빨리 떨어진다.</mark></p>
+<p>알맞은 빠르기를 찾으려면 숫자를 여러 번 바꿔 봐야 한다. 그때마다 코드를 열고, 고치고, 저장하고, Play. 귀찮다. <mark class="key">코드를 열지 않고 숫자를 바꾸는 방법이 필요하다.</mark></p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod"><span class="tok-key">float</span> speed = <span class="tok-str">5</span>;</span>
+<span class="chg-line chg-line--mod"><span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;</span></code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-key">public</span> </mark><span class="tok-key">float</span> speed = <span class="tok-str">5</span>;</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-key">public</span> </mark><span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;</span></code></pre></div></div>
+<p><code>Bird</code> 를 클릭한다. Inspector 의 Bird Move 칸에 <strong>Speed</strong> 와 <strong>Gravity Speed</strong> 가 생겼다. Play 중에 Gravity Speed 를 바꿔 보자. 바로 바뀐다.</p>
+<div class="callout callout--tip"><span class="callout__label">public</span><span><mark class="key">변수 앞에 붙이면 Inspector 에 칸이 생긴다.</mark> 코드를 안 열고, Play 중에도 값을 바꿀 수 있다. 안 붙인 변수는 그 스크립트 안에서만 쓴다.</span></div>
+<p><mark class="key">Play 중에 바꾼 값은 Stop 하면 돌아간다.</mark> 알맞은 값을 찾았으면 <strong>Stop 한 뒤에</strong> Gravity Speed 를 <strong>1.5</strong> 로 넣고 씬을 저장한다 (Ctrl + S).</p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>코드에는 5, Inspector 에는 1.5 다. 지금 새는 어느 값으로 떨어지나?</span></div>
+<p><mark class="key">Inspector 의 값이다.</mark> Inspector 에 들어간 값이 코드의 숫자보다 앞선다.</p>
+</section>
+<section class="section" id="s4"><div class="eyebrow">2.4</div><h2>스페이스를 통해 점프</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직</div><ol class="spec__list"><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">스페이스를 누르면 새가 위로 점프하게 만든다.</mark> 이걸 하려면 두 가지가 필요하다.</p>
+<ol><li><strong>스페이스를 눌렀는지</strong> 알아내기</li><li><strong>눌렀을 때만</strong> 점프하기</li></ol>
+<h3 class="step">필요한 것 1 — 스페이스를 눌렀는지 알아내기 </h3>
+<p>Unity 에는 키보드 상태를 알려 주는 <code>Keyboard</code> 가 있다. 이렇게 쓴다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame</code></pre></div>
+<p><mark class="key">이번 프레임에 스페이스를 눌렀으면 <code>true</code>, 아니면 <code>false</code>.</mark> 지금은 이런 게 있다는 것만 알면 된다.</p>
+<div class="callout callout--tip"><span class="callout__label">Keyboard</span><span>키보드 입력을 알려 주는 것. 맨 위 <code>using UnityEngine.InputSystem;</code> 상자에 들어 있다 (01 에서 적어 둔 줄). <strong>이 줄이 없으면 <code>Keyboard</code> 에 빨간 줄이 생긴다.</strong></span></div>
+<h3 class="step">필요한 것 2 — 눌렀을 때만 하기 </h3>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>앞으로 가기와 떨어지기는 매 프레임 한다. 점프도 매 프레임 하나?</span></div>
+<p>점프는 눌렀을 때만 한다. <strong>「~ 할 때만」 을 코드로 쓰는 것이 <code>if</code> 다.</strong></p>
+<div class="callout callout--tip"><span class="callout__label">if</span><span><mark class="key">괄호 안이 <code>true</code> 면 중괄호 안을 하고, <code>false</code> 면 건너뛴다.</mark> 괄호 안에는 참/거짓 값(bool)이 들어간다. 더 깊게 보려면 <a href="concept-if.html">if 정리</a>.</span></div>
+<h3 class="step">둘을 합친다 </h3>
+<p>점프부터 넣지 않는다. <mark class="key">누른 순간을 잘 잡는지 Console 로 먼저 확인한다.</mark></p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code>        <span class="tok-cmt">// 3. 스페이스를 통해 점프</span>
+        <span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+        <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame) <span class="tok-cmt">// 스페이스를 눌렀을 때 </span>
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"스페이스를 눌렀습니다"</span>);
+        }</code></pre></div>
+<p><span class="play">▶ Play</span> 하고 스페이스를 몇 번 눌러 보자. <mark class="key">누를 때마다 Console 에 한 줄씩 찍힌다.</mark> Update 가 매 프레임 「눌렀니?」 하고 묻고, 누른 그 프레임에만 들어간 것이다.</p>
+<p>조건이 잘 들어오니 점프를 넣는다. 떨어지는 줄을 복사해 방향을 위로, 숫자는 변수로.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+    <span class="tok-cmt">// … 1 · 2 는 그대로 …</span>
+
+    <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+    {
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"스페이스를 눌렀습니다"</span>);
+    }
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;
+<span class="chg-line chg-line--add"><span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">5</span>;</span>
+
+<span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+{
+    <span class="tok-cmt">// … 1 · 2 는 그대로 …</span>
+
+    <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+    {
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"스페이스를 눌렀습니다"</span>);
+<span class="chg-line chg-line--add">        <span class="tok-cmt">// 점프를 한다.</span></span>
+<span class="chg-line chg-line--add">        transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.up * jumpPower * <span class="tok-lit">Time</span>.deltaTime);</span>
+    }
+}</code></pre></div></div>
+<p><span class="play">▶ Play</span> 로그는 찍힌다. 그런데 <mark class="key">새가 점프하는 것 같지가 않다.</mark></p>
+<div class="callout callout--info"><span class="callout__label">다음 시간 질문</span><span>조건은 분명히 들어온다. 그런데 왜 점프처럼 안 보일까?</span></div>
+</section>
+<section class="section" id="s5"><div class="eyebrow">2.5</div><h2>확인하기</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>Play 하면 새가 오른쪽으로 날아가면서 천천히 떨어진다</span></div><div class="check" data-check><span class="check__box"></span><span>Inspector 에 Speed · Gravity Speed · Jump Power 세 칸이 있고, 바꾸면 움직임이 바뀐다</span></div><div class="check" data-check><span class="check__box"></span><span>스페이스를 누를 때마다 Console 에 「스페이스를 눌렀습니다」 가 한 줄씩 찍힌다</span></div><div class="check" data-check><span class="check__box"></span><span>점프가 점프 같지 않다. <strong>이게 맞다.</strong> 다음 시간에 고친다</span></div></div>
+</section>
+<section class="section" id="s6"><div class="eyebrow">2.6</div><h2>안 되면</h2>
+<ul><li><strong><code>Debug.Log("...")</code> 줄에 빨간 줄</strong> → <mark class="key">뒤에 <code>;</code> 를 빼먹었다.</mark></li><li><strong>변수 줄을 복사했더니 빨간 줄</strong> → <mark class="key">이름을 안 바꿔서 같은 이름이 둘이다.</mark></li><li><strong>코드의 숫자를 바꿨는데 그대로다</strong> → <mark class="key">Inspector 의 값이 앞선다.</mark> Inspector 에서 바꾼다.</li></ul>
+</section>
+<section class="section" id="s7"><div class="eyebrow">2.7</div><h2>답 — 이 시간이 끝났을 때의 코드</h2>
+<p>여기까지 스스로 해봤다면 봐도 된다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+<span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>.<span class="tok-lit">InputSystem</span>;
+<span class="tok-cmt">// 일괄 주석 컨트롤 + K , 컨트롤 + C</span>
+<span class="tok-cmt">// 일괄 주석 컨트롤 + K , 컨트롤 + U</span>
+
+<span class="tok-cmt">// 플레이어</span>
+<span class="tok-cmt">// 기본적인 이동 로직</span>
+<span class="tok-cmt">// 1. 오른쪽으로 계속 나아감.</span>
+<span class="tok-cmt">// 2. 중력으로 인해서 계속 아래로 떨어짐</span>
+<span class="tok-cmt">// 3. 스페이스를 통해 점프</span>
+<span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+<span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-key">float</span> speed = <span class="tok-str">5</span>;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> gravitySpeed = <span class="tok-str">5</span>;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">5</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-cmt">// 1. 오른쪽으로 계속 나아감.</span>
+        transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.right * speed * <span class="tok-lit">Time</span>.deltaTime);
+
+        <span class="tok-cmt">// 2. 중력으로 인해서 계속 아래로 떨어짐</span>
+        transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.down * gravitySpeed * <span class="tok-lit">Time</span>.deltaTime);
+
+        <span class="tok-cmt">// 3. 스페이스를 통해 점프</span>
+        <span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+        <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame) <span class="tok-cmt">// 스페이스를 눌렀을 때 </span>
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"스페이스를 눌렀습니다"</span>);
+            <span class="tok-cmt">// 점프를 한다.</span>
+            transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.up * jumpPower * <span class="tok-lit">Time</span>.deltaTime);
+        }
+    }
+
+}</code></pre></div>
+<p>Inspector 의 Gravity Speed 는 1.5 로 저장돼 있다.</p>
+</section>
+
+    <section class="section"><div class="navpair"><a href="ch01.html"><div class="l">이전</div><div class="t">01 · 기획서 — 만들 게임을 글로 쪼갠다</div></a><a href="ch03.html"><div class="l">다음</div><div class="t">03 · 플레이어 — 기본적인 이동 로직, 물리로 다시</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">2.1 시작하기 전에</a><a class="railitem" href="#s2">2.2 오른쪽으로 계속 나아감</a><a class="railitem" href="#s3">2.3 중력으로 인해서 계속 아래로 떨어짐</a><a class="railitem" href="#s4">2.4 스페이스를 통해 점프</a><a class="railitem" href="#s5">2.5 확인하기</a><a class="railitem" href="#s6">2.6 안 되면</a><a class="railitem" href="#s7">2.7 답 — 이 시간이 끝났을 때의 코드</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>

@@ -70,5 +70,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Edu_claudeTest.slnx"
+    "dotnet.defaultSolution": "Edu_claudeTest.slnx",
+    "python.terminal.useEnvFile": true
 }

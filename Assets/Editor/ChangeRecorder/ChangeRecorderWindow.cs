@@ -157,12 +157,45 @@ namespace ClassRecorder
                 EditorUtility.DisplayDialog("수업 기록", "tools/record-report.py 가 이 프로젝트에 없습니다.\n기록 폴더를 교재 프로젝트로 가져가서 보고서를 만드세요.\n\n" + dir, "확인");
                 return;
             }
+            // 파이썬을 세 이름으로 차례로 찾는다. python.org 설치본은 py 런처만 있을 수 있고,
+            // 파이썬이 없는 윈도우는 "python" 이 Microsoft Store 안내문을 찍는 껍데기(종료코드 9009)다.
+            string scriptArgs = "\"" + script + "\" \"" + dir + "\"";
+            var candidates = new[] { new[] { "python", scriptArgs }, new[] { "py", "-3 " + scriptArgs }, new[] { "python3", scriptArgs } };
+            string lastOut = "", lastErr = "";
+            foreach (var c in candidates)
+            {
+                string outp, err; int code;
+                if (!TryRunPython(c[0], c[1], out outp, out err, out code)) continue;   // 그 이름이 없다
+                bool storeStub = code == 9009 || (outp + err).Contains("was not found") || (outp + err).Contains("Microsoft Store");
+                if (storeStub) continue;
+                if (code == 0 && File.Exists(dir + "/report.md"))
+                {
+                    EditorUtility.OpenWithDefaultApp(dir + "/report.md");
+                    return;
+                }
+                EditorUtility.DisplayDialog("수업 기록", "보고서 생성 실패 (" + c[0] + ")\n\n" + outp + "\n" + err, "확인");
+                return;
+            }
+            EditorUtility.DisplayDialog("수업 기록",
+                "이 PC 에 파이썬이 없어서 보고서를 만들 수 없습니다.\n\n" +
+                "설치: 시작 메뉴 → Microsoft Store → \"Python 3\" 검색 → 설치 (무료, 1~2분).\n" +
+                "설치 후 이 버튼을 다시 누르면 됩니다. Unity 를 다시 켤 필요는 없습니다.\n\n" +
+                "또는 아래 기록 폴더를 교재 프로젝트의 recordings/ 로 가져가서\n" +
+                "python tools/record-report.py 를 실행하세요.\n\n" + dir,
+                "확인");
+            if (!string.IsNullOrEmpty(lastOut + lastErr)) UnityEngine.Debug.Log("[수업 기록] " + lastOut + lastErr);
+        }
+
+        /// <summary>exe 를 실행해 본다. 실행 파일 자체가 없으면 false. 있으면 출력과 종료코드를 돌려준다.</summary>
+        static bool TryRunPython(string exe, string args, out string outp, out string err, out int code)
+        {
+            outp = ""; err = ""; code = -1;
             try
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "python",
-                    Arguments = "\"" + script + "\" \"" + dir + "\"",
+                    FileName = exe,
+                    Arguments = args,
                     WorkingDirectory = ChangeRecorder.ProjectRoot,
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -174,18 +207,16 @@ namespace ClassRecorder
                 psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
                 using (var p = Process.Start(psi))
                 {
-                    string err = p.StandardError.ReadToEnd();
-                    string outp = p.StandardOutput.ReadToEnd();
+                    err = p.StandardError.ReadToEnd();
+                    outp = p.StandardOutput.ReadToEnd();
                     p.WaitForExit(60000);
-                    if (p.ExitCode == 0 && File.Exists(dir + "/report.md"))
-                        EditorUtility.OpenWithDefaultApp(dir + "/report.md");
-                    else
-                        EditorUtility.DisplayDialog("수업 기록", "보고서 생성 실패\n\n" + outp + "\n" + err, "확인");
+                    code = p.ExitCode;
+                    return true;
                 }
             }
-            catch (Exception e)
+            catch (System.ComponentModel.Win32Exception)
             {
-                EditorUtility.DisplayDialog("수업 기록", "python 을 실행하지 못했습니다: " + e.Message + "\n\n기록 폴더를 교재 프로젝트로 가져가서\npython tools/record-report.py 를 실행하세요.", "확인");
+                return false;   // 그 이름의 실행 파일이 없다
             }
         }
     }

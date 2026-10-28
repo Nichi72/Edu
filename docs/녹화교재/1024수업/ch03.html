@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 · 플레이어 — 기본적인 이동 로직, 물리로 다시 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    
+    <span class="topbar__now">03</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">03 · 플레이어 — 기본적인 이동 로직, 물리로 다시</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <a class="toc__item" href="ch01.html"><span class="toc__num">01</span>기획서 — 만들 게임을 글로 쪼갠다</a><a class="toc__item" href="ch02.html"><span class="toc__num">02</span>플레이어 — 기본적인 이동 로직</a><div class="toc__current"><div>03 · 플레이어 — 기본적인 이동 로직, 물리로 다시</div><a class="toc__sub" href="#s1">3.1 시작하기 전에</a><a class="toc__sub" href="#s2">3.2 왜 점프 같지 않을까</a><a class="toc__sub" href="#s3">3.3 중력으로 인해서 계속 아래로 떨어짐</a><a class="toc__sub" href="#s4">3.4 오른쪽으로 계속 나아감</a><a class="toc__sub" href="#s5">3.5 스페이스를 통해 점프</a><a class="toc__sub" href="#s6">3.6 확인하기</a><a class="toc__sub" href="#s7">3.7 안 되면</a><a class="toc__sub" href="#s8">3.8 답 — 이 시간이 끝났을 때의 코드</a></div><div class="navpart label">개념 정리</div><a class="toc__item" href="concept-if.html"><span class="toc__num">+</span>if — 조건에 따라 할지 말지 정한다</a>
+        <div class="navfoot"><div class="meta num">챕터 · 3</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">Chapter 03</div>
+      <h1>플레이어 — 기본적인 이동 로직, 물리로 다시</h1>
+      <div class="card"><div class="label" style="margin-bottom:12px">이번 시간에 만드는 것</div><p class="meta" style="margin-bottom:8px">Play 를 누르면 이렇게 된다.</p><ul class="goals"><li><span class="n">1</span><span>스페이스를 누르면 새가 위로 튀어 올랐다가 곡선을 그리며 떨어진다 — 진짜 점프</span></li><li><span class="n">2</span><span>중력 코드를 한 줄도 안 써도 새가 떨어진다</span></li><li><span class="n">3</span><span>새가 오른쪽으로 계속 날아간다</span></li></ul></div>
+<p><strong>이번에 배우는 말</strong> — <a href="#s2">터널링</a> · <a href="#s3">Rigidbody</a> · <a href="#s4">GetComponent</a> · <a href="#s4">null</a> · <a href="#s4">linearVelocity</a></p>
+<p>이번에 정해지는 이름이다. <mark class="key">철자와 대소문자까지 이대로 쓴다.</mark></p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>이름</span><span>무엇</span><span>값</span></div><div class="table__row table__row--3"><span><code>BirdMoveByRid</code></span><span>Rigidbody 로 움직이는 새 스크립트. <strong>R · I · D</strong></span><span>—</span></div><div class="table__row table__row--3"><span><code>rb</code></span><span>Bird 의 Rigidbody 를 담는 변수</span><span>Inspector 로 연결</span></div><div class="table__row table__row--3"><span><code>forwardSpeed</code></span><span>오른쪽으로 가는 속도</span><span>5</span></div><div class="table__row table__row--3"><span><code>jumpPower</code></span><span>점프할 때 위로 주는 속도</span><span>코드 10, Inspector 5</span></div></div>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">3.1</div><h2>시작하기 전에</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>02 를 끝냈다. 스페이스를 누르면 Console 에 로그는 찍히는데 점프가 점프 같지 않다</span></div></div>
+</section>
+<section class="section" id="s2"><div class="eyebrow">3.2</div><h2>왜 점프 같지 않을까</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직</div><ol class="spec__list"><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">02 에서 만들었지만 점프 같지 않다</div></span></li></ol></div>
+<p><mark class="key">점프가 왜 이상한지 원인을 찾는다.</mark></p>
+<p>Scene 뷰를 보면서 Play 하고, Inspector 의 Jump Power 를 10, 100, 300 으로 올려 본다. 100 쯤에서 깔짝 움직이고, 300 이면 크게 튄다. <strong>그래도 플래피 버드의 점프가 아니다.</strong></p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>이걸 AI 에게 어떻게 설명할까? 원인을 모르면 설명도 못 한다.</span></div>
+<p>원인은 <code>transform.Translate</code> 에 있다. <mark class="key">Translate 는 사실 순간이동이다.</mark> 매 프레임 위치를 조금씩 바꿔 끼우는 것이다. 그게 쌓여서 움직이는 것처럼 보일 뿐이다. 물리 엔진은 그 사이를 모른다.</p>
+<div class="callout callout--tip"><span class="callout__label">터널링</span><span>물체가 한 번에 크게 옮겨지면서 <mark class="key">그 사이에 있던 벽을 뚫고 지나가는 현상.</mark> 점프 한 번에 5칸을 순간이동하면, 그 사이에 파이프가 있어도 지나간다.</span></div>
+<p>속도가 쌓이지도 않으니, 올라갔다 내려오는 <strong>관성</strong> 느낌도 없다. <mark class="key">Translate 로는 진짜 점프를 만들기 어렵다. 물리가 필요하다.</mark></p>
+<div class="callout callout--tip"><span class="callout__label">한 가지 더</span><span>10 으로는 거의 안 움직인 이유는 따로 있다. 02 에서 점프에도 <code>Time.deltaTime</code> 을 곱했다. 점프는 누른 <strong>한 프레임에만</strong> 일어난다. 60fps 면 5 × 1/60 ≈ 0.08칸만 올라간다. <mark class="key">계속 일어나는 일에는 곱하고, 한 번 일어나는 일에는 곱하지 않는다.</mark></span></div>
+</section>
+<section class="section" id="s3"><div class="eyebrow">3.3</div><h2>중력으로 인해서 계속 아래로 떨어짐</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직 (물리로 다시)</div><ol class="spec__list"><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">중력을 코드가 아니라 물리 엔진에게 맡긴다.</mark> 물리로 다시 만들 때는 중력이 제일 쉬워서 먼저 한다.</p>
+<ol><li>Hierarchy 에서 <code>Bird</code> 클릭</li><li>Inspector 맨 아래 <strong>Add Component</strong> → <code>Rigidbody</code> 검색 → 추가</li><li><mark class="key">Inspector 의 <strong>Bird Move (Script)</strong> 이름 옆 체크를 끈다.</mark> 지우지는 않는다. Translate 로 만든 기록으로 남긴다</li></ol>
+<p><span class="play">▶ Play</span> <mark class="key">코드 한 줄 없이 새가 떨어진다.</mark> 그것도 점점 빨라지면서.</p>
+<div class="callout callout--tip"><span class="callout__label">Rigidbody</span><span><mark class="key">물리 엔진이 이 물체를 움직이게 맡기는 컴포넌트.</mark> 붙이는 순간 중력을 받는다. 충돌 처리를 직접 만들지 않아도 된다. 이게 Unity 의 가장 큰 강점이다.</span></div>
+<p>Play 중에 Rigidbody 의 <strong>Use Gravity</strong> 를 꺼 본다. 더 빨라지지 않고 그 순간의 속도 그대로 간다. 관성이다. 다시 켜면 다시 빨라지며 떨어진다.</p>
+<p>움직이는 방식을 정리하면 이렇다.</p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>방식</span><span>좋은 점</span><span>아쉬운 점</span></div><div class="table__row table__row--3"><span><code>transform.Translate</code></span><span>단순하다. 계산이 빠르다. 내 뜻대로 정확히 놓인다</span><span>순간이동이다. 물리가 아니다</span></div><div class="table__row table__row--3"><span><code>Rigidbody</code></span><span>물리 엔진이 중력 · 속도 · 충돌을 계산한다</span><span>내 뜻대로만 움직이지는 않는다</span></div></div>
+<p>세 번째 방식(CharacterController)도 있다. 이번에는 다루지 않는다.</p>
+</section>
+<section class="section" id="s4"><div class="eyebrow">3.4</div><h2>오른쪽으로 계속 나아감</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직 (물리로 다시)</div><ol class="spec__list"><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">Rigidbody 에게 「오른쪽으로 가」 라고 시킨다.</mark> 이걸 하려면 세 가지가 필요하다.</p>
+<ol><li>Rigidbody 로 움직이는 <strong>새 스크립트</strong></li><li>그 스크립트가 Bird 의 Rigidbody 를 <strong>손에 쥐는 방법</strong></li><li>Rigidbody 에게 <strong>속도를 주는 방법</strong></li></ol>
+<h3 class="step">필요한 것 1 — 새 스크립트 </h3>
+<p><code>Assets/Script</code> → 오른쪽 클릭 → <strong>Create &gt; Scripting &gt; MonoBehaviour Script</strong> → 이름 <code>BirdMoveByRid</code> → <code>Bird</code> 에 붙인다. <mark class="key">이름은 <strong>R · I · D</strong>, Rigidbody 의 앞 세 글자다.</mark></p>
+<h3 class="step">필요한 것 2 — Rigidbody 를 손에 쥐기 </h3>
+<p>02 에서는 <code>transform.Translate</code> 라고 썼다. Transform 컴포넌트의 기능을 쓴 것이다. 이번에는 Rigidbody 의 기능을 쓴다.</p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span><code>Rigidbody.</code> 라고 바로 쓰면 될까? <code>Rigidbody</code> 가 대문자로 시작한다. 01 의 이름 규칙으로 보면 이건 무엇인가?</span></div>
+<p><mark class="key">대문자로 시작하니 클래스다. 클래스로 바로 쓰지 않고, 담을 변수를 만든다.</mark></p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMoveByRid</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">Rigidbody</span> rb;</code></pre></div>
+<p><code>float speed</code> 와 모양이 같다. 그릇의 타입만 <code>float</code> 대신 <code>Rigidbody</code> 다.</p>
+<p>이 그릇에 Bird 의 Rigidbody 를 넣는 방법은 둘이다.</p>
+<p><strong>코드로 넣기</strong> — <code>Start</code> 에서 찾아서 넣는다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        rb = GetComponent&lt;<span class="tok-lit">Rigidbody</span>&gt;();
+    }</code></pre></div>
+<div class="callout callout--tip"><span class="callout__label">GetComponent</span><span><mark class="key">내 오브젝트에 붙어 있는 컴포넌트를 찾아오는 함수.</mark> <code>GetComponent&lt;Rigidbody&gt;()</code> 는 「내게 붙은 Rigidbody 를 줘」. MeshRenderer, Transform, Collider 도 같은 방법으로 찾는다.</span></div>
+<p>그런데 Bird 에 Rigidbody 가 <strong>없으면?</strong> 찾아도 없다.</p>
+<div class="callout callout--tip"><span class="callout__label">null</span><span><mark class="key">아무것도 없다는 뜻. 0 과 다르다.</mark> 0 은 값이 있는데 그 값이 0 이고, null 은 값 자체가 없다. 없는 것에서 무언가를 꺼내려 하면 에러가 난다.</span></div>
+<div class="table"><div class="table__row table__row--2 table__row--head"><span>휴지걸이에</span><span>뜻</span></div><div class="table__row table__row--2"><span>휴지가 걸려 있다</span><span>값이 있다 (1)</span></div><div class="table__row table__row--2"><span>휴지심만 걸려 있다</span><span>값이 0 이다. 그래도 <strong>있다</strong></span></div><div class="table__row table__row--2"><span>휴지심조차 없다</span><span><strong>null</strong>. 아예 없다</span></div></div>
+<p><strong>Inspector 로 넣기</strong> — <code>Bird</code> 의 Inspector 에서 Bird Move By Rid 의 <strong>Rb</strong> 칸을 본다. <code>None (Rigidbody)</code> 다. Hierarchy 의 <code>Bird</code> 를 그 칸으로 끌어다 놓는다. <mark class="key">칸이 <code>Bird (Rigidbody)</code> 가 되면 연결된 것이다.</mark></p>
+<p><strong>우리는 Inspector 로 넣는다.</strong> 칸에 들어간 것을 눈으로 확인할 수 있고, 실행해 보지 않아도 알 수 있다. 그래서 코드로 넣는 줄은 주석으로 막아 둔다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="chg-line chg-line--mod">rb = GetComponent&lt;<span class="tok-lit">Rigidbody</span>&gt;();</span></code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>rb = GetComponent&lt;<span class="tok-lit">Rigidbody</span>&gt;();</span></code></pre></div></div>
+<div class="callout callout--warn"><span class="callout__label">용어 주의</span><span>코드로 넣기를 <strong>동적 할당</strong>, Inspector 로 넣기를 <strong>정적 할당</strong> 이라고 부르기도 한다. C# 책에서 「동적 할당」 은 보통 다른 뜻(<code>new</code> 로 메모리를 잡는 일)이니, 여기서는 이 뜻으로만 기억한다.</span></div>
+<h3 class="step">필요한 것 3 — 속도를 주기 </h3>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        <span class="tok-cmt">// rb = GetComponent&lt;Rigidbody&gt;();</span>
+
+        <span class="tok-cmt">// 오른쪽으로움직이는 코드</span>
+        rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<span class="tok-str">1</span>,<span class="tok-str">0</span>,<span class="tok-str">0</span>);
+    }</code></pre></div>
+<p><span class="play">▶ Play</span> 앞으로 간다. 그런데 이상한 점이 있다.</p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>02 의 Translate 는 Update 에 있어야 계속 갔다. 이 줄은 <strong>Start</strong> 에 있다. 한 번만 실행되는데 왜 계속 갈까?</span></div>
+<div class="callout callout--tip"><span class="callout__label">linearVelocity</span><span>Rigidbody 의 속도. <mark class="key">위치를 옮기는 게 아니라 속도를 준다.</mark> 한 번 속도를 주면 물리 엔진이 그 속도로 계속 옮긴다. 그래서 Start 에 한 번이면 된다.</span></div>
+<p><code>1,0,0</code> 의 1 은 하드코딩이다. 변수로 뺀다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-lit">Rigidbody</span> rb;
+
+<span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+{
+<span class="chg-line chg-line--mod">    rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<mark class="chg-del"><span class="tok-str">1</span></mark>,<span class="tok-str">0</span>,<span class="tok-str">0</span>);</span>
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-lit">Rigidbody</span> rb;
+<span class="chg-line chg-line--add"><span class="tok-key">public</span> <span class="tok-key">float</span> forwardSpeed = <span class="tok-str">5</span>;</span>
+
+<span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+{
+<span class="chg-line chg-line--mod">    rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(<mark class="chg-add">forwardSpeed</mark>,<span class="tok-str">0</span>,<span class="tok-str">0</span>);</span>
+}</code></pre></div></div>
+<p><strong>중력 코드는 안 쓴다.</strong> Rigidbody 의 Use Gravity 가 이미 하고 있다.</p>
+</section>
+<section class="section" id="s5"><div class="eyebrow">3.5</div><h2>스페이스를 통해 점프</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직 (물리로 다시)</div><ol class="spec__list"><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-done"><span class="spec__mark">✓</span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><mark class="key">스페이스를 누르면 새가 위로 튀어 오르게 만든다.</mark> 이번엔 진짜 점프다.</p>
+<p>이걸 하려면 두 가지가 필요하다.</p>
+<ul><li>스페이스를 눌렀을 때만 → <strong>02 와 똑같은 <code>if</code></strong></li><li>위로 튀어 오르기 → 위치를 옮기지 말고 <strong>위로 속도를 준다</strong></li></ul>
+<p>새 스크립트에는 <code>using UnityEngine.InputSystem;</code> 이 없다. <mark class="key"><code>Keyboard</code> 에 빨간 줄이 생기면 맨 위에 그 줄을 넣는다.</mark></p>
+<p>02 의 점프와 나란히 놓고 보자.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+{
+<span class="chg-line chg-line--del">    transform.<span class="tok-fn">Translate</span>(<span class="tok-lit">Vector3</span>.up * jumpPower * <span class="tok-lit">Time</span>.deltaTime);</span>
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame)
+{
+<span class="chg-line chg-line--add">    rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(forwardSpeed,jumpPower,<span class="tok-str">0</span>);</span>
+}</code></pre></div></div>
+<p><code>if</code> 는 그대로다. <mark class="key">바뀐 건 중괄호 안 한 줄 — 위치를 옮기던 것이 속도를 주는 것으로.</mark></p>
+<p>변수도 하나 더 만든다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">10</span>;</code></pre></div>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>점프인데 왜 x 칸에 <code>forwardSpeed</code> 를 넣었을까? 0 을 넣으면 어떻게 될까?</span></div>
+<p><mark class="key">속도를 통째로 새로 주기 때문이다.</mark> x 에 0 을 넣으면 점프할 때마다 앞으로 가던 속도가 사라져 그 자리에서 뛴다.</p>
+<p><span class="play">▶ Play</span> <mark class="key">올라갔다가 곡선을 그리며 내려온다.</mark> 진짜 점프다. 10 은 너무 세다. Inspector 에서 <strong>Jump Power 를 5</strong> 로. <strong>값은 직접 플레이해 보면서 찾는 것이다.</strong></p>
+</section>
+<section class="section" id="s6"><div class="eyebrow">3.6</div><h2>확인하기</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>Bird 에 Rigidbody 가 있고, Bird Move (Script) 는 꺼져 있다</span></div><div class="check" data-check><span class="check__box"></span><span>Bird Move By Rid 의 <strong>Rb</strong> 칸에 <code>Bird (Rigidbody)</code> 가 들어가 있다</span></div><div class="check" data-check><span class="check__box"></span><span>Play 하면 새가 오른쪽으로 가면서 떨어진다. 중력 코드가 없는데도</span></div><div class="check" data-check><span class="check__box"></span><span>스페이스를 누르면 올라갔다가 곡선을 그리며 내려온다</span></div><div class="check" data-check><span class="check__box"></span><span>Start 에 한 번 쓴 속도로 왜 계속 가는지 말할 수 있다</span></div></div>
+</section>
+<section class="section" id="s7"><div class="eyebrow">3.7</div><h2>안 되면</h2>
+<ul><li><strong>Rb 칸이 <code>None (Rigidbody)</code></strong> → <mark class="key">아직 아무것도 안 넣었다.</mark> 이 상태로 Play 하면 없는 것에서 꺼내려 해서 에러가 난다. Bird 를 Rb 칸에 끌어다 놓는다.</li><li><strong><code>Keyboard</code> 에 빨간 줄</strong> → <mark class="key">새 스크립트에 <code>using UnityEngine.InputSystem;</code> 이 없다.</mark> 맨 위에 넣는다.</li><li><strong>새가 두 배로 빨리 떨어지거나 이상하게 움직인다</strong> → <mark class="key">Bird Move (Script) 를 안 껐다.</mark> 두 스크립트가 같이 움직이고 있다.</li></ul>
+</section>
+<section class="section" id="s8"><div class="eyebrow">3.8</div><h2>답 — 이 시간이 끝났을 때의 코드</h2>
+<p>여기까지 스스로 해봤다면 봐도 된다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+<span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>.<span class="tok-lit">InputSystem</span>;
+
+<span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMoveByRid</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">Rigidbody</span> rb;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> forwardSpeed = <span class="tok-str">5</span>;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">10</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        <span class="tok-cmt">// rb = GetComponent&lt;Rigidbody&gt;();</span>
+
+        <span class="tok-cmt">// 오른쪽으로움직이는 코드</span>
+        rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(forwardSpeed,<span class="tok-str">0</span>,<span class="tok-str">0</span>);
+    }
+
+    <span class="tok-cmt">// Update is called once per frame</span>
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-cmt">// 3. 스페이스를 통해 점프</span>
+        <span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+        <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame) <span class="tok-cmt">// 스페이스를 눌렀을때</span>
+        {
+            <span class="tok-cmt">//위 방향으로 점프를 한다.</span>
+            rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(forwardSpeed,jumpPower,<span class="tok-str">0</span>);
+        }
+    }
+}</code></pre></div>
+<p>Inspector — Rb 는 <code>Bird (Rigidbody)</code>, Jump Power 는 5.</p>
+</section>
+
+    <section class="section"><div class="navpair"><a href="ch02.html"><div class="l">이전</div><div class="t">02 · 플레이어 — 기본적인 이동 로직</div></a><a href="index.html"><div class="l">다음</div><div class="t">목차</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">3.1 시작하기 전에</a><a class="railitem" href="#s2">3.2 왜 점프 같지 않을까</a><a class="railitem" href="#s3">3.3 중력으로 인해서 계속 아래로 떨어짐</a><a class="railitem" href="#s4">3.4 오른쪽으로 계속 나아감</a><a class="railitem" href="#s5">3.5 스페이스를 통해 점프</a><a class="railitem" href="#s6">3.6 확인하기</a><a class="railitem" href="#s7">3.7 안 되면</a><a class="railitem" href="#s8">3.8 답 — 이 시간이 끝났을 때의 코드</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>

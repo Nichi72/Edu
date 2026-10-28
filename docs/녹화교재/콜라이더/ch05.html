@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05 · 스코어 — 파이프의 사이를 지나면 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    <span>콜라이더와 충돌 — 게임오버와 스코어</span>
+    <span class="topbar__sep">/</span>
+    <span class="topbar__now">05</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">05 · 스코어 — 파이프의 사이를 지나면</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <a class="toc__item" href="ch04.html"><span class="toc__num">04</span>게임오버 조건 — 땅과 파이프에 닿으면</a><div class="toc__current"><div>05 · 스코어 — 파이프의 사이를 지나면</div><a class="toc__sub" href="#s1">5.1 시작하기 전에</a><a class="toc__sub" href="#s2">5.2 파이프의 사이를 지나면 점수가 1점씩 오른다</a><a class="toc__sub" href="#s3">5.3 확인하기</a><a class="toc__sub" href="#s4">5.4 안 되면</a><a class="toc__sub" href="#s5">5.5 답 — 이 시간이 끝났을 때의 코드</a></div><div class="navpart label">개념 정리</div><a class="toc__item" href="concept-collider.html"><span class="toc__num">+</span>충돌 정리 — Collider 를 더 알고 싶으면</a>
+        <div class="navfoot"><div class="meta num">챕터 · 2</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">Chapter 05</div>
+      <h1>스코어 — 파이프의 사이를 지나면</h1>
+      <div class="card"><div class="label" style="margin-bottom:12px">이번 시간에 만드는 것</div><p class="meta" style="margin-bottom:8px">Play 를 누르면 이렇게 된다.</p><ul class="goals"><li><span class="n">1</span><span>새가 파이프 사이를 빠져나가면 점수가 1 오른다</span></li><li><span class="n">2</span><span>파이프 사이에는 보이지 않는 칸이 있다. 새는 그 칸에 막히지 않는다</span></li><li><span class="n">3</span><span>파이프가 세 쌍이다. 다 지나가면 점수가 3 이다. 점수는 Inspector 와 Console 에서 본다</span></li></ul></div>
+<p><strong>이번에 배우는 말</strong> — <a href="#s2">Is Trigger</a> · <a href="#s2">OnTriggerEnter</a> · <a href="#s2">int</a></p>
+<p>이번에 정해지는 이름이다. <mark class="key">철자와 대소문자까지 이대로 쓴다.</mark></p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>이름</span><span>무엇</span><span>값</span></div><div class="table__row table__row--3"><span><code>ScoreZone</code></span><span>파이프 사이 틈을 채우는 보이지 않는 칸. Cube</span><span>—</span></div><div class="table__row table__row--3"><span><code>OnTriggerEnter</code></span><span>Trigger 칸에 들어간 순간 Unity 가 부르는 함수</span><span>—</span></div><div class="table__row table__row--3"><span><code>score</code></span><span>점수</span><span>0</span></div></div>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">5.1</div><h2>시작하기 전에</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>04 를 끝냈다. 땅이나 파이프에 닿으면 Console 에 <code>게임 오버</code> 가 찍히고 게임이 멈춘다</span></div></div>
+</section>
+<section class="section" id="s2"><div class="eyebrow">5.2</div><h2>파이프의 사이를 지나면 점수가 1점씩 오른다</h2>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>스코어</div><ol class="spec__list"><li class="is-now"><span class="spec__mark">▶</span><span class="spec__t">1. 파이프의 사이를 지나면 점수가 1점씩 오른다</span></li></ol></div>
+<p><mark class="key">새가 파이프 사이를 지나가면 점수가 1 오르게 만든다.</mark> 지금은 지나가도 아무 일이 없다.</p>
+<p>이걸 하려면 세 가지가 필요하다.</p>
+<ol><li>「지나갔다」 를 알아챌 <strong>칸</strong></li><li>그 칸에 들어간 <strong>순간</strong> 을 코드가 아는 방법</li><li>점수를 <strong>세는</strong> 변수</li></ol>
+<h3 class="step">필요한 것 1 — 지나간 걸 알아챌 칸 </h3>
+<p>두 파이프 사이 틈에 칸을 하나 놓는다.</p>
+<ol><li><strong>3D Object &gt; Cube</strong> → 이름 <code>ScoreZone</code></li><li>틈을 꽉 채우게 놓는다</li></ol>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>이름</span><span>Position</span><span>Scale</span></div><div class="table__row table__row--3"><span><code>ScoreZone</code></span><span>4, 0.5, 0</span><span>1, 3, 1</span></div></div>
+<p><span class="play">▶ Play</span> 틈으로 날아가 본다. <mark class="key">게임 오버가 된다.</mark></p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>왜 게임 오버일까?</span></div>
+<p><mark class="key">ScoreZone 도 Cube 라서 Box Collider 가 있다. 새에게는 벽이다.</mark> 04 의 <code>OnCollisionEnter</code> 가 불렸다.</p>
+<p>벽이 아니라 지나가게 만든다. <code>ScoreZone</code> 의 <strong>Box Collider</strong> 에서 <strong>Is Trigger</strong> 를 체크한다.</p>
+<p><span class="play">▶ Play</span> <mark class="key">새가 ScoreZone 을 그냥 통과한다.</mark> 게임 오버도 없다.</p>
+<div class="callout callout--tip"><span class="callout__label">Is Trigger</span><span>체크하면 Collider 가 <mark class="key">막지 않고, 지나가는 것만 알아챈다.</mark> 달리기의 결승선과 같다. 선은 아무도 막지 않지만, 누가 지나갔는지는 안다.</span></div>
+<p>이제 ScoreZone 이 보일 필요는 없다. <code>ScoreZone</code> 의 <strong>Mesh Renderer</strong> 체크를 끈다. 04 에서 본 대로 보이는 것과 부딪히는 것은 따로다. Game 뷰에서는 사라지고, Scene 뷰에서 선택하면 초록 선이 남는다.</p>
+<h3 class="step">필요한 것 2 — 칸에 들어간 순간 </h3>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>새가 ScoreZone 을 지날 때 04 의 <code>OnCollisionEnter</code> 가 불릴까?</span></div>
+<p><mark class="key">안 불린다. 그래서 게임 오버도 없었다.</mark> Trigger 를 지날 때는 다른 함수가 불린다. <code>BirdMoveByRid</code> 의 <code>OnCollisionEnter</code> 아래에 쓴다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">void</span> <span class="tok-fn">OnTriggerEnter</span>(<span class="tok-lit">Collider</span> other)
+    {
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"통과"</span>);
+    }</code></pre></div>
+<p><span class="play">▶ Play</span> 틈을 지나는 순간 Console 에 <code>통과</code> 가 찍힌다.</p>
+<div class="callout callout--tip"><span class="callout__label">OnTriggerEnter</span><span>Trigger 칸에 <mark class="key">들어간 순간 Unity 가 한 번 부르는 함수.</mark> 괄호 안 <code>other</code> 에는 새가 들어간 칸(ScoreZone)의 Collider 가 들어온다.</span></div>
+<p>04 와 나란히 놓으면 이렇다.</p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>ScoreZone 의 Is Trigger</span><span>새는</span><span>Unity 가 부르는 함수</span></div><div class="table__row table__row--3"><span>끔 — 벽</span><span>막힌다</span><span><code>OnCollisionEnter(Collision collision)</code></span></div><div class="table__row table__row--3"><span>켬 — 결승선</span><span>지나간다</span><span><code>OnTriggerEnter(Collider other)</code></span></div></div>
+<p><mark class="key">괄호 안도 다르다. <code>Collision</code> 과 <code>Collider</code>.</mark> 바꿔 쓰면 Console 에 에러가 뜨고 함수가 불리지 않는다.</p>
+<h3 class="step">필요한 것 3 — 점수 세기 </h3>
+<p><code>통과</code> 대신 점수가 올라가야 한다. 점수를 담을 변수를 만든다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">10</span>;</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">10</span>;
+<span class="chg-line chg-line--add"><span class="tok-key">public</span> <span class="tok-key">int</span> score = <span class="tok-str">0</span>;</span></code></pre></div></div>
+<div class="callout callout--tip"><span class="callout__label">int</span><span><mark class="key">소수점 없는 수를 담는 변수 타입.</mark> 점수 · 목숨 · 개수처럼 셀 수 있는 것에 쓴다. 속도처럼 0.5 가 될 수 있는 것은 <code>float</code> 이다.</span></div>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="chg-line chg-line--mod"><span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<mark class="chg-del"><span class="tok-str">"통과"</span></mark>);</span></code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMoveByRid.cs</span></div><pre><code><span class="chg-line chg-line--add">score = score + <span class="tok-str">1</span>;</span>
+<span class="chg-line chg-line--mod"><span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<mark class="chg-add">score</mark>);</span></code></pre></div></div>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span><code>score = score + 1</code> 은 수학으로 보면 말이 안 된다. 무슨 뜻일까?</span></div>
+<p><mark class="key">오른쪽을 먼저 계산해서 왼쪽에 넣는다.</mark> 지금 점수에 1 을 더해 다시 점수에 넣는다. <code>=</code> 는 「같다」 가 아니라 「넣는다」 다.</p>
+<p><span class="play">▶ Play</span> <code>Bird</code> 를 선택해 두고 Inspector 의 <strong>Score</strong> 칸을 보면서 틈을 지나간다. <mark class="key">지날 때마다 1 씩 오른다.</mark> Console 에도 찍힌다.</p>
+<p>「1점씩 오른다」 를 보려면 파이프가 더 있어야 한다.</p>
+<ol><li>Hierarchy 에서 <code>PipeTop</code> · <code>PipeBottom</code> · <code>ScoreZone</code> 을 Ctrl 을 누른 채 함께 선택</li><li><strong>Ctrl + D</strong> 로 복사 → 복사된 셋을 Scene 뷰에서 오른쪽으로 끌어 옮긴다</li><li>한 번 더</li></ol>
+<p><span class="play">▶ Play</span> 세 쌍을 다 지나가면 Score 가 3 이다.</p>
+<div class="callout callout--info"><span class="callout__label">다음 시간 질문</span><span>점수가 Inspector 와 Console 에만 있다. 플레이어는 Game 뷰만 본다. 점수를 게임 화면에 띄우려면?</span></div>
+</section>
+<section class="section" id="s3"><div class="eyebrow">5.3</div><h2>확인하기</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>ScoreZone 의 Is Trigger 는 켜져 있고, Mesh Renderer 는 꺼져 있다</span></div><div class="check" data-check><span class="check__box"></span><span>틈을 지나가면 막히지 않고 Score 가 1 오른다</span></div><div class="check" data-check><span class="check__box"></span><span>파이프나 땅에 닿으면 04 처럼 게임이 멈춘다</span></div><div class="check" data-check><span class="check__box"></span><span>Is Trigger 를 켜면 왜 <code>OnCollisionEnter</code> 대신 <code>OnTriggerEnter</code> 가 불리는지 말할 수 있다</span></div></div>
+</section>
+<section class="section" id="s4"><div class="eyebrow">5.4</div><h2>안 되면</h2>
+<ul><li><strong>틈에서 게임 오버가 된다</strong> → <mark class="key">ScoreZone 의 Is Trigger 를 안 켰다.</mark></li><li><strong>새가 땅을 뚫고 떨어진다</strong> → <mark class="key">Is Trigger 를 Bird 에 켰다.</mark> Bird 에서 끄고 ScoreZone 에 켠다.</li><li><strong>지나가도 아무것도 안 찍힌다</strong> → 함수 이름의 철자. 04 와 같다. <code>OnTriggerEnter(Collider other)</code></li><li><strong>Console 에 <code>This message parameter has to be of type</code> 에러</strong> → 괄호 안 타입이 바뀌었다. <code>OnTriggerEnter</code> 는 <code>Collider</code>, <code>OnCollisionEnter</code> 는 <code>Collision</code>.</li></ul>
+</section>
+<section class="section" id="s5"><div class="eyebrow">5.5</div><h2>답 — 이 시간이 끝났을 때의 코드</h2>
+<p>여기까지 스스로 해봤다면 봐도 된다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMoveByRid.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+<span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>.<span class="tok-lit">InputSystem</span>;
+
+<span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMoveByRid</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">public</span> <span class="tok-lit">Rigidbody</span> rb;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> forwardSpeed = <span class="tok-str">5</span>;
+    <span class="tok-key">public</span> <span class="tok-key">float</span> jumpPower = <span class="tok-str">10</span>;
+    <span class="tok-key">public</span> <span class="tok-key">int</span> score = <span class="tok-str">0</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Start</span>()
+    {
+        <span class="tok-cmt">// rb = GetComponent&lt;Rigidbody&gt;();</span>
+
+        <span class="tok-cmt">// 오른쪽으로움직이는 코드</span>
+        rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(forwardSpeed,<span class="tok-str">0</span>,<span class="tok-str">0</span>);
+    }
+
+    <span class="tok-cmt">// Update is called once per frame</span>
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-cmt">// 3. 스페이스를 통해 점프</span>
+        <span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+        <span class="tok-key">if</span>(<span class="tok-lit">Keyboard</span>.current.spaceKey.wasPressedThisFrame) <span class="tok-cmt">// 스페이스를 눌렀을때</span>
+        {
+            <span class="tok-cmt">//위 방향으로 점프를 한다.</span>
+            rb.linearVelocity = <span class="tok-key">new</span> <span class="tok-lit">Vector3</span>(forwardSpeed,jumpPower,<span class="tok-str">0</span>);
+        }
+    }
+
+    <span class="tok-cmt">// 게임오버 조건 — 파이프에 닿으면, 땅에 닿으면</span>
+    <span class="tok-key">void</span> <span class="tok-fn">OnCollisionEnter</span>(<span class="tok-lit">Collision</span> collision)
+    {
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"게임 오버"</span>);
+        <span class="tok-lit">Time</span>.timeScale = <span class="tok-str">0</span>;
+    }
+
+    <span class="tok-cmt">// 스코어 — 파이프의 사이를 지나면 점수가 1점씩 오른다</span>
+    <span class="tok-key">void</span> <span class="tok-fn">OnTriggerEnter</span>(<span class="tok-lit">Collider</span> other)
+    {
+        score = score + <span class="tok-str">1</span>;
+        <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(score);
+    }
+}</code></pre></div>
+<p>씬 — 파이프 세 쌍. 쌍마다 <code>ScoreZone</code> 이 틈에 있고, Is Trigger 켬 · Mesh Renderer 끔.</p>
+</section>
+
+    <section class="section"><div class="navpair"><a href="ch04.html"><div class="l">이전</div><div class="t">04 · 게임오버 조건 — 땅과 파이프에 닿으면</div></a><a href="index.html"><div class="l">다음</div><div class="t">목차</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">5.1 시작하기 전에</a><a class="railitem" href="#s2">5.2 파이프의 사이를 지나면 점수가 1점씩 오른다</a><a class="railitem" href="#s3">5.3 확인하기</a><a class="railitem" href="#s4">5.4 안 되면</a><a class="railitem" href="#s5">5.5 답 — 이 시간이 끝났을 때의 코드</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>

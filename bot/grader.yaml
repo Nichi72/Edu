@@ -1,0 +1,31 @@
+# 채점기 설정. 비워 두면 compare.py 의 DEFAULT_CONFIG 가 쓰인다.
+# 바꾼 뒤 봇을 다시 켜야 적용된다.
+
+# 기준 코드에 있어도 학생에게 요구하지 않는 문장 (정규식, 정규화된 문장 기준 — 숫자는 N, 문자열은 "S")
+ignore_statements:
+  - '^Debug\.Log\('
+  - '^print\('
+
+# 기준 씬에 있어도 안 보는 오브젝트 (정규식, 경로 기준. 예: '^Test')
+ignore_objects: []
+
+# 안 보는 컴포넌트 키 (예: UniversalAdditionalLightData)
+ignore_components: []
+
+# 값까지 같아야 하는 것. 기준에 그 오브젝트·컴포넌트가 있을 때만 본다. 숫자는 허용 오차
+# 학생에게는 Inspector 이름과 기준 값이 보인다 ("Main Camera 의 Size 값을 5 에 맞춘다 (지금 7)").
+# 이름 표는 grader/compare.py 의 FIELD_LABELS. 회전은 m_LocalRotation(쿼터니언) 대신 m_LocalEulerAnglesHint 를 쓴다
+value_rules:
+  - object: Main Camera
+    component: Camera
+    fields:
+      orthographic: 0
+      orthographic size: 0.01
+  - object: Main Camera
+    component: Transform
+    fields:
+      m_LocalPosition: 0.01
+
+# ProjectSettings.asset 에서 기준과 같아야 하는 키
+project_settings:
+  - activeInputHandler

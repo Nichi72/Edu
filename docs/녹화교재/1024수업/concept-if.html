@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개념 · if — 조건에 따라 할지 말지 정한다 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    
+    <span class="topbar__now">개념 정리</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">개념 · if — 조건에 따라 할지 말지 정한다</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <a class="toc__item" href="ch01.html"><span class="toc__num">01</span>기획서 — 만들 게임을 글로 쪼갠다</a><a class="toc__item" href="ch02.html"><span class="toc__num">02</span>플레이어 — 기본적인 이동 로직</a><a class="toc__item" href="ch03.html"><span class="toc__num">03</span>플레이어 — 기본적인 이동 로직, 물리로 다시</a><div class="navpart label">개념 정리</div><div class="toc__current"><div>if — 조건에 따라 할지 말지 정한다</div><a class="toc__sub" href="#s1">1 if 의 모양</a><a class="toc__sub" href="#s2">2 조건 자리에 들어가는 것 — bool</a><a class="toc__sub" href="#s3">3 직접 켜고 꺼 보기</a><a class="toc__sub" href="#s4">4 else — 아니면</a><a class="toc__sub" href="#s5">5 else if — 여러 갈래</a><a class="toc__sub" href="#s6">6 자주 틀리는 것</a></div>
+        <div class="navfoot"><div class="meta num">챕터 · 3</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">개념 정리</div>
+      <h1>if — 조건에 따라 할지 말지 정한다</h1>
+      <p class="lead">02 에서 점프를 만들려고 <code>if</code> 를 썼다. 여기서는 <code>if</code> 를 조금 더 깊게 본다. 02 를 끝내는 데 꼭 필요하지는 않다. 조건문은 「프로그래밍의 절반」 이라고 할 만큼 자주 쓴다. 한 번 제대로 보고 가면 뒤에서 덜 막힌다.</p>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">1</div><h2>if 의 모양</h2>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">if</span>(조건)
+{
+    <span class="tok-cmt">// 조건이 true 일 때만 하는 일</span>
+}</code></pre></div>
+<p><mark class="key">괄호 안이 <code>true</code> 면 중괄호 안으로 들어가고, <code>false</code> 면 통째로 건너뛴다.</mark></p>
+<p><mark class="key"><code>Update</code> 안에 쓴 <code>if</code> 는 매 프레임 다시 묻는다.</mark> 02 의 점프가 그랬다. 1초에 수십 번 「눌렀니?」 하고 묻고, 누른 그 프레임에만 들어간다.</p>
+</section>
+<section class="section" id="s2"><div class="eyebrow">2</div><h2>조건 자리에 들어가는 것 — bool</h2>
+<p><mark class="key">조건 자리에는 참 아니면 거짓, 둘 중 하나인 값이 들어간다.</mark> 이런 값을 <strong>bool</strong> 이라고 한다. 변수 기본형 넷 <code>int</code> <code>float</code> <code>char</code> <code>bool</code> 중 하나다.</p>
+<div class="table"><div class="table__row table__row--2 table__row--head"><span>조건 자리에 쓴 것</span><span>예</span></div><div class="table__row table__row--2"><span>값 그대로</span><span><code>if(true)</code> — 항상 들어간다</span></div><div class="table__row table__row--2"><span>bool 변수</span><span><code>if(isBool)</code></span></div><div class="table__row table__row--2"><span>bool 을 돌려주는 것</span><span><code>if(Keyboard.current.spaceKey.wasPressedThisFrame)</code></span></div><div class="table__row table__row--2"><span>비교</span><span><code>if(transform.position.y &lt; -4)</code></span></div></div>
+<p>마지막 줄처럼 <mark class="key">두 값을 비교하면 bool 이 나온다.</mark> 새의 높이가 −4 보다 작으면 <code>true</code> 다. 기획서의 「땅에 닿으면 게임 오버」 를 만들 때 이런 조건을 쓰게 된다.</p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>비교</span><span>뜻</span><span><code>speed</code> 가 5 일 때</span></div><div class="table__row table__row--3"><span><code>speed &gt; 3</code></span><span>크다</span><span><code>true</code></span></div><div class="table__row table__row--3"><span><code>speed &lt; 3</code></span><span>작다</span><span><code>false</code></span></div><div class="table__row table__row--3"><span><code>speed &gt;= 5</code></span><span>크거나 같다</span><span><code>true</code></span></div><div class="table__row table__row--3"><span><code>speed &lt;= 4</code></span><span>작거나 같다</span><span><code>false</code></span></div><div class="table__row table__row--3"><span><code>speed == 5</code></span><span>같다</span><span><code>true</code></span></div><div class="table__row table__row--3"><span><code>speed != 5</code></span><span>다르다</span><span><code>false</code></span></div></div>
+</section>
+<section class="section" id="s3"><div class="eyebrow">3</div><h2>직접 켜고 꺼 보기</h2>
+<p>조건을 Inspector 의 체크 상자로 만들어 Play 중에 켜고 꺼 본다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code>    <span class="tok-key">public</span> <span class="tok-key">bool</span> isBool = <span class="tok-key">true</span>;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+        <span class="tok-key">if</span>(isBool)
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"참입니다."</span>);
+        }
+    }</code></pre></div>
+<p><span class="play">▶ Play</span> Console 에 「참입니다.」 가 계속 찍힌다. Play 중에 Inspector 의 <strong>Is Bool</strong> 체크를 끈다. <mark class="key">더 안 찍힌다.</mark> 다시 켜면 다시 찍힌다.</p>
+</section>
+<section class="section" id="s4"><div class="eyebrow">4</div><h2>else — 아니면</h2>
+<p><code>if</code> 가 아닐 때 할 일은 <code>else</code> 에 쓴다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code>        <span class="tok-key">if</span>(isBool)
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"참입니다."</span>);
+        }
+        <span class="tok-key">else</span>
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"거짓입니다."</span>);
+        }</code></pre></div>
+<p>이제 Is Bool 을 끄면 「거짓입니다.」 가 찍힌다. <mark class="key">둘 중 하나는 반드시 실행된다.</mark></p>
+</section>
+<section class="section" id="s5"><div class="eyebrow">5</div><h2>else if — 여러 갈래</h2>
+<p>갈래가 셋 이상이면 <code>else if</code> 를 잇는다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code>        <span class="tok-key">if</span>(speed &gt; <span class="tok-str">10</span>)
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"너무 빠르다"</span>);
+        }
+        <span class="tok-key">else</span> <span class="tok-key">if</span>(speed &gt; <span class="tok-str">3</span>)
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"알맞다"</span>);
+        }
+        <span class="tok-key">else</span>
+        {
+            <span class="tok-lit">Debug</span>.<span class="tok-fn">Log</span>(<span class="tok-str">"너무 느리다"</span>);
+        }</code></pre></div>
+<p><mark class="key">위에서부터 차례로 묻고, 처음 <code>true</code> 인 곳 하나만 실행한다.</mark> <code>speed</code> 가 12 면 「너무 빠르다」 만 찍힌다. <code>speed &gt; 3</code> 도 참이지만 거기까지 묻지 않는다. 그래서 <strong>순서가 중요하다.</strong></p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span><code>speed</code> 가 5 면 무엇이 찍히나? 3 이면?</span></div>
+<p><mark class="key">5 면 「알맞다」. 3 이면 「너무 느리다」.</mark> <code>3 &gt; 3</code> 은 <code>false</code> 이기 때문이다.</p>
+</section>
+<section class="section" id="s6"><div class="eyebrow">6</div><h2>자주 틀리는 것</h2>
+<ul><li><strong><code>if(조건);</code> 괄호 뒤에 세미콜론.</strong> <code>if</code> 가 거기서 끝나 버린다. <mark class="key">중괄호 안은 조건과 상관없이 항상 실행된다.</mark> 빨간 줄이 안 생겨서 찾기 어렵다.</li><li><strong><code>=</code> 와 <code>==</code>.</strong> <code>if(speed = 5)</code> 는 빨간 줄이 생긴다. <strong><code>=</code> 는 「넣어라」, <code>==</code> 는 「같은지 물어라」 다.</strong></li><li><strong>중괄호를 뺐다.</strong> 중괄호가 없으면 <code>if</code> 바로 아래 <strong>한 줄만</strong> <code>if</code> 에 속한다. 둘째 줄부터는 항상 실행된다. <mark class="key">한 줄이어도 중괄호를 쓰는 버릇을 들인다.</mark></li></ul>
+</section>
+
+    <section class="section"><div class="navpair"><a href="index.html"><div class="l">목차</div><div class="t">플래피 버드로 배우는 Unity</div></a><a href="ch02.html"><div class="l">돌아가기</div><div class="t">02 · 플레이어 — 기본적인 이동 로직</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">1 if 의 모양</a><a class="railitem" href="#s2">2 조건 자리에 들어가는 것 — bool</a><a class="railitem" href="#s3">3 직접 켜고 꺼 보기</a><a class="railitem" href="#s4">4 else — 아니면</a><a class="railitem" href="#s5">5 else if — 여러 갈래</a><a class="railitem" href="#s6">6 자주 틀리는 것</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>

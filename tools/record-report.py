@@ -18,6 +18,9 @@ Unity 의 「기록」 메뉴(Assets/Editor/ChangeRecorder)가 남긴
   3. 타임라인 — 마커로 절을 나눈 사건 목록. 코드 저장마다 직전 사본과의 diff
   4. 코드 최종본 — 세션 중 바뀐 .cs 의 마지막 상태
 
+세션 폴더에 transcript.txt (tools/transcribe.py 결과) 가 있고 --video 를 주면,
+타임라인의 사건 사이에 그때 한 말이 끼어 들어간다. 이게 교재 재료의 완성형이다.
+
 영상과 맞추기: 모든 줄에 경과 시간(hh:mm:ss)이 있고, 요약에 시작 벽시계 시각이 있다.
   기록기 창을 화면 한구석에 띄워 두면 영상에 기록기의 시계가 그대로 찍히고, 마커를 누르면 Scene 뷰에
   "마커 N" 알림이 떠서 영상에서 그 순간을 찾을 수 있다. 그 한 지점으로 --video 를 주면 된다.
@@ -81,6 +84,19 @@ def load_snapshot_index(sdir):
             if len(c) >= 4:
                 by_path.setdefault(c[1], []).append((int(c[0]), c[3]))
     return by_path
+
+
+def load_transcript(sdir):
+    """[hh:mm:ss - hh:mm:ss] 말  → [(영상초, 끝초, 말)]"""
+    p = sdir / "transcript.txt"
+    if not p.exists():
+        return None
+    segs = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        m = re.match(r"\[(\d+:\d+:\d+) - (\d+:\d+:\d+)\]\s*(.*)", line)
+        if m and m.group(3).strip():
+            segs.append((parse_clock(m.group(1)), parse_clock(m.group(2)), m.group(3).strip()))
+    return segs
 
 
 def read_snap(sdir, name):
@@ -260,6 +276,8 @@ def describe(ev):
         return f"순서 변경 · {g('obj')}"
     if k == "prefab_update":
         return f"프리팹 인스턴스 갱신 ×{g('count')}"
+    if k == "speech":
+        return f"*{g('text')}*"
     if k == "reload":
         return "에디터 리로드 (컴파일 또는 Play 진입)"
     if k == "editor_quit":
@@ -333,6 +351,17 @@ def main():
         v = float(e) + video_offset
         return f"`{hms(e)}` 영상 `{hms(v) if v >= 0 else '-' + hms(-v)}`"
 
+    # 말 끼워 넣기: 영상 시각을 기록 시각으로 바꿔 사건 사이에 놓는다
+    transcript = load_transcript(sdir)
+    speech_note = ""
+    if transcript and video_offset is not None:
+        for vs, ve, text in transcript:
+            evs.append({"kind": "speech", "e": vs - video_offset, "t": "", "text": text})
+        evs.sort(key=lambda e: float(e.get("e", 0)))
+        speech_note = f"말 {len(transcript)}문장을 끼워 넣었다 (transcript.txt). 기울임이 말이다."
+    elif transcript:
+        speech_note = "transcript.txt 가 있지만 `--video` 가 없어 끼워 넣지 못했다."
+
     out = []
     out.append(f"# 수업 기록 — {when}  ({end_e / 60:.0f}분)")
     out.append("")
@@ -370,6 +399,8 @@ def main():
         out.append("영상과 맞추려면 `--video 마커번호=mm:ss` 를 주고 다시 만든다.")
     else:
         out.append(f"시간은 기록 시작 후 경과, 그 옆이 영상 시각 (`--video {video_spec}`). 괄호는 벽시계.")
+    if speech_note:
+        out.append(speech_note)
     out.append("")
 
     for ev in evs:

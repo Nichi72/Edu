@@ -54,3 +54,15 @@ Thumbs.db
 
 # 도구 실행 부산물
 /tools/__pycache__/
+
+# ── 채점 봇 (bot/) 와 제출 버튼 산출물 ──
+/bot/.venv/
+/bot/data/
+/bot/.env
+/bot/env.txt
+/bot/**/__pycache__/
+/bot/.pytest_cache/
+/제출/
+
+# 교재 재료 — 원본 전사(학생 이름), 남의 영상 자막·화면, 지난 판. 커밋에 섞이면 안 된다
+/docs/녹화교재/*/재료/

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 · 기획서 — 만들 게임을 글로 쪼갠다 — 플래피 버드로 배우는 Unity</title>
+<link rel="stylesheet" href="../textbook.css">
+<link rel="stylesheet" href="../_chapter.css">
+<style>
+  .step .tag { margin-left: 8px; vertical-align: middle; font-weight: 600; }
+  p .tag, li .tag, .table .tag, .callout .tag { font-size: 12px; padding: 1px 7px; vertical-align: 1px; }
+  .callout > .callout__label { text-transform: none; letter-spacing: 0.2px; }
+  .table__row--head code { text-transform: none; }
+  mark.key { background: #fff0a0; color: var(--text); font-weight: 700; padding: 1px 3px; border-radius: 3px;
+              -webkit-box-decoration-break: clone; box-decoration-break: clone; }   /* 꼭 읽어야 하는 한 문장 */
+  mark.key code { background: rgba(0, 0, 0, .06); }
+  .play { display: inline-block; font-size: 12.5px; font-weight: 700; color: #fff; background: var(--accent-text);
+           border-radius: 999px; padding: 2px 10px; margin-right: 4px; vertical-align: 1px; letter-spacing: .3px; white-space: nowrap; }   /* 표 머리줄의 코드 이름도 대소문자 그대로 */   /* 용어 상자 제목은 코드 이름이라 대소문자를 바꾸면 안 된다 */
+  .doc__body .table { margin: 14px 0; }
+  .terms .table__row--2 > span:first-child { overflow-wrap: anywhere; }
+  pre.plain { background: var(--bg-muted); border-radius: var(--radius-card); padding: 14px 16px; overflow: auto; font-family: var(--font-code); font-size: 14px; }
+  .callout--info { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+  .callout--info > .callout__label { color: var(--accent-text); }
+  .spec { border: 1px solid var(--line); border-radius: var(--radius-card); padding: 14px 16px; margin: 4px 0 20px; background: var(--bg-subtle); }
+  .spec__head { font-size: 13px; font-weight: 700; color: var(--text-subtle); margin-bottom: 8px; }
+  .spec__tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-bg); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+  .spec__list { list-style: none; margin: 0; padding: 0; }
+  .spec__list li { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; color: var(--text-muted); font-size: 15.5px; line-height: 1.5; }
+  .spec__list li.is-done { color: var(--text-faint); }
+  .spec__list li.is-done .spec__mark { color: var(--accent); }
+  .spec__list li.is-now { background: var(--accent-bg); color: var(--text); font-weight: 700; }
+  .spec__list li.is-now .spec__mark { color: var(--accent-text); }
+  .spec__list li.is-now::after { content: "지금"; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+  .spec__mark { width: 14px; flex: none; text-align: center; }
+  .spec__sub { font-weight: 400; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .compare { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 14px 0; }
+  .compare .code pre { font-size: 12.5px; padding: 16px; }
+  .code--before .code__dot { background: #f2545b; }
+  .chg-line { display: inline-block; min-width: 100%; border-radius: 2px; }
+  .chg-line--add { background: rgba(30, 215, 96, .16); }
+  .chg-line--del { background: rgba(242, 84, 91, .16); text-decoration: line-through; text-decoration-color: rgba(242, 84, 91, .85); }
+  .chg-line--mod { background: rgba(255, 255, 255, .05); }
+  mark.chg-add { background: rgba(30, 215, 96, .38); color: #fff; border-radius: 3px; padding: 0 1px; }
+  mark.chg-del { background: rgba(242, 84, 91, .38); color: #fff; text-decoration: line-through; border-radius: 3px; padding: 0 1px; }
+  @media (max-width: 860px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar__in">
+    <span>플래피 버드로 배우는 Unity</span>
+    <span class="topbar__sep">/</span>
+    
+    <span class="topbar__now">01</span>
+  </div>
+</div>
+
+<div class="doc">
+  <nav class="doc__nav">
+    <div class="navblock">
+      <button class="navtoggle" type="button" aria-expanded="false">
+        <span class="navtoggle__t">목차</span>
+        <span class="navtoggle__n">01 · 기획서 — 만들 게임을 글로 쪼갠다</span>
+        <span class="navtoggle__i" aria-hidden="true">▾</span>
+      </button>
+      <div class="navwrap">
+        <div class="navpart label"><a href="index.html">목차</a></div>
+        <div class="toc__current"><div>01 · 기획서 — 만들 게임을 글로 쪼갠다</div><a class="toc__sub" href="#s1">1.1 시작하기 전에</a><a class="toc__sub" href="#s2">1.2 기획서를 쓴다</a><a class="toc__sub" href="#s3">1.3 스크립트를 만든다</a><a class="toc__sub" href="#s4">1.4 이름 짓는 규칙</a><a class="toc__sub" href="#s5">1.5 기획서를 코드 맨 위에 붙인다</a><a class="toc__sub" href="#s6">1.6 확인하기</a><a class="toc__sub" href="#s7">1.7 안 되면</a><a class="toc__sub" href="#s8">1.8 더 알고 싶으면 — 왜 대문자와 소문자가 다른 글자인가</a></div><a class="toc__item" href="ch02.html"><span class="toc__num">02</span>플레이어 — 기본적인 이동 로직</a><a class="toc__item" href="ch03.html"><span class="toc__num">03</span>플레이어 — 기본적인 이동 로직, 물리로 다시</a><div class="navpart label">개념 정리</div><a class="toc__item" href="concept-if.html"><span class="toc__num">+</span>if — 조건에 따라 할지 말지 정한다</a>
+        <div class="navfoot"><div class="meta num">챕터 · 3</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <article class="doc__body">
+    <section class="section">
+      <div class="eyebrow">Chapter 01</div>
+      <h1>기획서 — 만들 게임을 글로 쪼갠다</h1>
+      <div class="card"><div class="label" style="margin-bottom:12px">이번 시간에 만드는 것</div><p class="meta" style="margin-bottom:8px">이번 시간이 끝나면 이렇게 되어 있다.</p><ul class="goals"><li><span class="n">1</span><span>플래피 버드의 기획서가 있다 — 플레이어 · 파이프 · 게임오버 · 스코어 · UI</span></li><li><span class="n">2</span><span>Unity 에 <code>BirdMove</code> 스크립트가 있고 Bird 에 붙어 있다</span></li><li><span class="n">3</span><span><code>BirdMove.cs</code> 맨 위에 플레이어 기획이 주석으로 적혀 있다</span></li></ul></div>
+<p><strong>이번에 배우는 말</strong> — <a href="#s2">명세</a> · <a href="#s2">기획서</a> · <a href="#s3">시그니처</a> · <a href="#s3">대소문자</a> · <a href="#s4">코딩 스탠다드</a> · <a href="#s5">주석</a></p>
+<p>이번에 정해지는 이름이다. <mark class="key">철자와 대소문자까지 이대로 쓴다.</mark></p>
+<div class="table"><div class="table__row table__row--2 table__row--head"><span>이름</span><span>무엇</span></div><div class="table__row table__row--2"><span><code>BirdMove</code></span><span>새를 움직이는 스크립트. 클래스 이름 = 파일 이름</span></div><div class="table__row table__row--2"><span><code>speed</code></span><span>앞으로 가는 속도. 이번엔 자리만 만든다</span></div></div>
+    </section>
+
+    <section class="section" id="s1"><div class="eyebrow">1.1</div><h2>시작하기 전에</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>씬에 <code>Bird</code>(노란 큐브)와 <code>Ground</code>(초록 바닥)가 있다. 모양은 대충이면 된다</span></div><div class="check" data-check><span class="check__box"></span><span>Project 창에 <code>Assets/Script</code> 폴더가 있다</span></div></div>
+</section>
+<section class="section" id="s2"><div class="eyebrow">1.2</div><h2>기획서를 쓴다</h2>
+<p><mark class="key">플래피 버드를 해 보고, 게임에 무엇이 있고 각각 어떻게 움직이는지 글로 적는다.</mark></p>
+<p>왜 코드보다 글이 먼저일까? AI 에게 만들어 달라고 하든 내가 직접 만들든, <strong>무엇을 만들지 정확히 말할 수 있어야</strong> 만들 수 있다.</p>
+<div class="callout callout--tip"><span class="callout__label">명세</span><span><mark class="key">만들 것을 다른 사람이 읽고 똑같이 만들 수 있게 적은 것.</mark> AI 에게 시킬 때도 이 글이 그대로 명령이 된다. 내가 내부를 잘 알수록 명세가 정확해진다.</span></div>
+<p>웹에서 플래피 버드를 직접 해 본다.</p>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span>화면에 보이는 것을 전부 말해 보자. 그리고 각각이 어떻게 움직이는지.</span></div>
+<p>같이 정리하면 이렇다.</p>
+<pre class="plain"><code>플래피 버드
+최소 플레이가 가능한 수준을 목표로
+
+플레이어
+기본적인 이동 로직
+오른쪽으로 계속 나아감.
+중력으로 인해서 계속 아래로 떨어짐
+스페이스를 통해 점프
+위 방향으로 스페이스를 눌렀을때 점프를 한다.
+
+파이프
+파이프는 오른쪽에서 일정한 간격으로 생성이됨.
+생성된 파이프는 왼쪽으로 이동한다. // 아닐수있음.
+사이에 있는 공간이 있는데 이 공간의 위치가 랜덤하게 바뀜.
+
+게임오버 조건
+파이프에 닿으면 게임 오버
+땅에 닿으면 게임 오버
+
+스코어
+파이프의 사이를 지나면 점수가 1점씩 오른다.
+
+UI
+점수가 표현된다.</code></pre>
+<div class="callout callout--tip"><span class="callout__label">기획서</span><span>명세를 모은 문서. <mark class="key">거창할 필요 없다. 게임 요소를 나누고, 각각 어떻게 움직이는지 한 줄씩 적으면 된다.</mark></span></div>
+<p>두 군데를 짚고 넘어간다.</p>
+<ul><li><strong><code>// 아닐수있음</code>.</strong> 화면에서는 파이프가 다가오는 것처럼 보인다. 그런데 새가 앞으로 가는 것일 수도 있다. <mark class="key">보이는 것과 만드는 방법은 다를 수 있다.</mark> 확실하지 않으면 표시해 두고 넘어간다. 우리는 새가 앞으로 가는 쪽으로 만든다.</li><li><strong>뺀 것.</strong> 죽으면 다시 시작하기, 새가 기울어지기. 목표가 「최소 플레이가 가능한 수준」 이라 이번엔 적지 않는다.</li></ul>
+</section>
+<section class="section" id="s3"><div class="eyebrow">1.3</div><h2>스크립트를 만든다</h2>
+<p><mark class="key">Bird 를 움직일 스크립트 <code>BirdMove</code> 를 만들어 Bird 에 붙인다.</mark></p>
+<ol><li>Project 창에서 <code>Assets/Script</code> 클릭</li><li>빈 곳에서 오른쪽 클릭 → <strong>Create &gt; Scripting &gt; MonoBehaviour Script</strong></li><li>이름이 파랗게 선택된 상태에서 <code>BirdMove</code> 입력 → Enter</li><li><code>BirdMove</code> 를 Hierarchy 의 <code>Bird</code> 위에 끌어다 놓는다</li></ol>
+<p><mark class="key">이름은 만들 때 정한다.</mark> 나중에 바꾸면 파일 이름과 클래스 이름이 어긋난다.</p>
+<p>이름을 왜 이렇게까지 신경 쓸까?</p>
+<div class="callout callout--tip"><span class="callout__label">시그니처</span><span>클래스 · 함수 · 변수의 이름. <mark class="key">과제는 코드 봇이 이 이름으로 찾아서 채점할 예정이다. 한 글자라도 다르면 못 찾는다.</mark></span></div>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span><code>BirdMove</code> 와 <code>Birdmove</code> 는 같은 이름일까?</span></div>
+<div class="callout callout--tip"><span class="callout__label">대소문자</span><span><mark class="key">컴퓨터에게 <code>A</code> 와 <code>a</code> 는 다른 글자다.</mark> 그래서 <code>BirdMove</code> 와 <code>Birdmove</code> 는 다른 이름이다. 왜 그런지는 맨 아래 「더 알고 싶으면」.</span></div>
+</section>
+<section class="section" id="s4"><div class="eyebrow">1.4</div><h2>이름 짓는 규칙</h2>
+<p><mark class="key">다음 시간부터 변수를 계속 만든다. 이름을 어떻게 지을지 먼저 정한다.</mark></p>
+<p>띄어쓰기를 못 쓰니까 <strong>대문자로 단어를 구분한다.</strong></p>
+<div class="table"><div class="table__row table__row--3 table__row--head"><span>무엇</span><span>규칙</span><span>예</span></div><div class="table__row table__row--3"><span>클래스</span><span>대문자로 시작, 단어마다 대문자</span><span><code>BirdMove</code></span></div><div class="table__row table__row--3"><span>함수</span><span>대문자로 시작</span><span><code>Update</code>, <code>Start</code></span></div><div class="table__row table__row--3"><span>변수</span><span><strong>소문자로</strong> 시작, 다음 단어부터 대문자</span><span><code>speed</code>, <code>gravitySpeed</code></span></div></div>
+<div class="callout callout--tip"><span class="callout__label">코딩 스탠다드</span><span>개발자끼리 지키는 이름 짓기 약속. <mark class="key">지키면 남이 읽기 쉽고, 안 지키면 욕먹는다.</mark></span></div>
+<p>규칙대로 변수 자리를 하나 만들어 본다. 값은 다음 시간에 넣는다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+
+    }
+}</code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+<span class="chg-line chg-line--add">    <span class="tok-key">float</span> speed;</span>
+<span class="chg-line chg-line--add"> </span>
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+
+    }
+}</code></pre></div></div>
+<div class="callout callout--warn"><span class="callout__label">멈춤</span><span><code>Birdmove</code>, <code>birdMove</code>, <code>BirdMove</code>. 클래스 이름으로 맞는 것은? 변수 이름으로 맞는 것은?</span></div>
+<p><mark class="key">클래스라면 <code>BirdMove</code>, 변수라면 <code>birdMove</code>.</mark> <code>Birdmove</code> 는 둘 다 아니다.</p>
+</section>
+<section class="section" id="s5"><div class="eyebrow">1.5</div><h2>기획서를 코드 맨 위에 붙인다</h2>
+<p><mark class="key">기획서의 플레이어 부분을 <code>BirdMove.cs</code> 맨 위에 붙인다.</mark> 다음 시간부터 이걸 한 줄씩 코드로 바꾼다.</p>
+<p>플레이어 부분을 복사해 맨 위에 붙여 넣어 보자. <mark class="key">빨간 줄이 잔뜩 생긴다.</mark> 컴퓨터가 한글 문장을 코드로 읽으려 해서다. <strong>컴퓨터가 읽지 않고 넘어가게 하는 방법이 필요하다.</strong></p>
+<div class="callout callout--tip"><span class="callout__label">주석</span><span><mark class="key"><code>//</code> 뒤는 컴퓨터가 읽지 않는다.</mark> 사람이 읽으라고 적는 메모다.</span></div>
+<p>붙인 줄을 드래그로 고르고 <strong>Ctrl + K, Ctrl + C</strong> — 한 번에 주석이 된다. 풀 때는 <strong>Ctrl + K, Ctrl + U</strong>. 이 단축키도 맨 위에 같이 적어 둔다.</p>
+<div class="compare"><div class="code code--before"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾸기 전</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod">플레이어</span>
+<span class="chg-line chg-line--mod">기본적인 이동 로직</span>
+<span class="chg-line chg-line--mod">오른쪽으로 계속 나아감.</span>
+<span class="chg-line chg-line--mod">중력으로 인해서 계속 아래로 떨어짐</span>
+<span class="chg-line chg-line--mod">스페이스를 통해 점프</span>
+<span class="chg-line chg-line--mod">위 방향으로 스페이스를 눌렀을때 점프를 한다.</span></code></pre></div><div class="code code--after"><div class="code__bar"><span class="code__dot"></span><code class="code__name">바꾼 뒤</code><span class="code__path">BirdMove.cs</span></div><pre><code><span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>플레이어</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>기본적인 이동 로직</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>오른쪽으로 계속 나아감.</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>중력으로 인해서 계속 아래로 떨어짐</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>스페이스를 통해 점프</span>
+<span class="chg-line chg-line--mod"><mark class="chg-add"><span class="tok-cmt">// </span></mark>위 방향으로 스페이스를 눌렀을때 점프를 한다.</span></code></pre></div></div>
+<p>파일 전체는 이렇게 된다.</p>
+<div class="code"><div class="code__bar"><span class="code__dot"></span><code class="code__name">BirdMove.cs</code><span class="code__path">Assets/Script</span></div><pre><code><span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>;
+<span class="tok-key">using</span> <span class="tok-lit">UnityEngine</span>.<span class="tok-lit">InputSystem</span>;
+<span class="tok-cmt">// 일괄 주석 컨트롤 + K , 컨트롤 + C</span>
+<span class="tok-cmt">// 일괄 주석 컨트롤 + K , 컨트롤 + U</span>
+
+<span class="tok-cmt">// 플레이어</span>
+<span class="tok-cmt">// 기본적인 이동 로직</span>
+<span class="tok-cmt">// 오른쪽으로 계속 나아감.</span>
+<span class="tok-cmt">// 중력으로 인해서 계속 아래로 떨어짐</span>
+<span class="tok-cmt">// 스페이스를 통해 점프</span>
+<span class="tok-cmt">// 위 방향으로 스페이스를 눌렀을때 점프를 한다.</span>
+
+<span class="tok-key">public</span> <span class="tok-key">class</span> <span class="tok-lit">BirdMove</span> : <span class="tok-lit">MonoBehaviour</span>
+{
+    <span class="tok-key">float</span> speed;
+
+    <span class="tok-key">void</span> <span class="tok-fn">Update</span>()
+    {
+
+    }
+}</code></pre></div>
+<p><code>using UnityEngine.InputSystem;</code> 은 지난 시간에 적어 둔 줄이다. 무슨 뜻인지는 점프를 만들 때 나온다.</p>
+<p><strong>왜 맨 위에 적어 두나.</strong> 코딩을 하다 보면 「내가 뭘 만들고 있었지?」 가 정말 자주 온다. <mark class="key">맨 위에 만들 것을 적어 두고, 한 줄씩 보면서 만든다.</mark> 그게 오히려 빠르다.</p>
+<p>다음 시간부터는 이 기획을 카드로 보여 주며, 어디까지 만들었는지 표시한다.</p>
+<div class="spec"><div class="spec__head"><span class="spec__tag">기획서</span>플레이어 — 기본적인 이동 로직</div><ol class="spec__list"><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">1. 오른쪽으로 계속 나아감</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">2. 중력으로 인해서 계속 아래로 떨어짐</span></li><li class="is-todo"><span class="spec__mark"></span><span class="spec__t">3. 스페이스를 통해 점프<div class="spec__sub">위 방향으로 스페이스를 눌렀을때 점프를 한다.</div></span></li></ol></div>
+<p><span class="play">▶ Play</span> 아직 아무 일도 안 일어난다. <mark class="key">Console 에 빨간 에러가 없으면 정상이다.</mark></p>
+</section>
+<section class="section" id="s6"><div class="eyebrow">1.6</div><h2>확인하기</h2>
+<div class="card"><div class="check" data-check><span class="check__box"></span><span>기획서에 플레이어 · 파이프 · 게임오버 조건 · 스코어 · UI 다섯 덩어리가 있다</span></div><div class="check" data-check><span class="check__box"></span><span><code>Assets/Script</code> 에 <code>BirdMove</code> 가 있고, <code>Bird</code> 의 Inspector 에 Bird Move (Script) 가 붙어 있다</span></div><div class="check" data-check><span class="check__box"></span><span>클래스 이름이 정확히 <code>BirdMove</code> 다. 대소문자까지</span></div><div class="check" data-check><span class="check__box"></span><span><code>BirdMove.cs</code> 맨 위에 플레이어 기획이 주석으로 있고, Console 에 빨간 에러가 없다</span></div></div>
+</section>
+<section class="section" id="s7"><div class="eyebrow">1.7</div><h2>안 되면</h2>
+<ul><li><strong>기획서를 붙여 넣었더니 빨간 줄이 잔뜩</strong> → <mark class="key">주석 처리를 안 했다.</mark> 붙인 줄을 고르고 Ctrl + K, Ctrl + C.</li></ul>
+</section>
+<section class="section" id="s8"><div class="eyebrow">1.8</div><h2>더 알고 싶으면 — 왜 대문자와 소문자가 다른 글자인가</h2>
+<p><mark class="key">컴퓨터 안에서 글자는 전부 숫자다.</mark> 글자마다 번호가 정해져 있고, 그 표를 <strong>유니코드</strong> 라고 한다. 영어 알파벳 부분은 옛날 <strong>아스키 코드</strong> 표와 같다.</p>
+<div class="table"><div class="table__row table__row--2 table__row--head"><span>글자</span><span>번호</span></div><div class="table__row table__row--2"><span><code>A</code></span><span>65</span></div><div class="table__row table__row--2"><span><code>B</code></span><span>66</span></div><div class="table__row table__row--2"><span><code>a</code></span><span>97</span></div><div class="table__row table__row--2"><span><code>b</code></span><span>98</span></div></div>
+<p><code>A</code> 는 65, <code>a</code> 는 97. 컴퓨터에게는 아예 다른 숫자라서 다른 글자다.</p>
+</section>
+
+    <section class="section"><div class="navpair"><a href="index.html"><div class="l">이전</div><div class="t">목차</div></a><a href="ch02.html"><div class="l">다음</div><div class="t">02 · 플레이어 — 기본적인 이동 로직</div></a></div></section>
+  </article>
+
+  <aside class="doc__rail">
+    <div class="label railtitle">이 페이지 내용</div>
+    <a class="railitem" href="#s1">1.1 시작하기 전에</a><a class="railitem" href="#s2">1.2 기획서를 쓴다</a><a class="railitem" href="#s3">1.3 스크립트를 만든다</a><a class="railitem" href="#s4">1.4 이름 짓는 규칙</a><a class="railitem" href="#s5">1.5 기획서를 코드 맨 위에 붙인다</a><a class="railitem" href="#s6">1.6 확인하기</a><a class="railitem" href="#s7">1.7 안 되면</a><a class="railitem" href="#s8">1.8 더 알고 싶으면 — 왜 대문자와 소문자가 다른 글자인가</a>
+  </aside>
+</div>
+<script src="../_chapter.js"></script>
+</body>
+</html>
